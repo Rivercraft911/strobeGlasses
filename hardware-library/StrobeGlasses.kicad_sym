@@ -1,0 +1,3603 @@
+(kicad_symbol_lib
+  (version 20241209)
+  (generator "kicad_symbol_editor")
+  (symbol "TestPoint_Pad_D1.0mm"
+    (pin_numbers
+      (hide yes)
+    )
+    (pin_names
+      (offset 0.762)
+      (hide yes)
+    )
+    (exclude_from_sim no)
+    (in_bom yes)
+    (on_board yes)
+    (in_pos_files yes)
+    (duplicate_pin_numbers_are_jumpers no)
+    (property "Reference" "TP"
+      (at 0 6.858 0)
+      (show_name no)
+      (do_not_autoplace no)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Value" "TestPoint"
+      (at 0 5.08 0)
+      (show_name no)
+      (do_not_autoplace no)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Footprint" "StrobeGlasses:TestPoint_Pad_D1.0mm"
+      (at 5.08 0 0)
+      (show_name no)
+      (do_not_autoplace no)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Datasheet" ""
+      (at 5.08 0 0)
+      (show_name no)
+      (do_not_autoplace no)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Description" "test point"
+      (at 0 0 0)
+      (show_name no)
+      (do_not_autoplace no)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "ki_keywords" "test point tp"
+      (at 0 0 0)
+      (show_name no)
+      (do_not_autoplace no)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "ki_fp_filters" "Pin* Test*"
+      (at 0 0 0)
+      (show_name no)
+      (do_not_autoplace no)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (symbol "TestPoint_Pad_D1.0mm_0_1"
+      (circle
+        (center 0 3.302)
+        (radius 0.762)
+        (stroke
+          (width 0)
+          (type default)
+        )
+        (fill
+          (type none)
+        )
+      )
+    )
+    (symbol "TestPoint_Pad_D1.0mm_1_1"
+      (pin passive line
+        (at 0 0 90)
+        (length 2.54)
+        (name "1"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+        (number "1"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+      )
+    )
+    (embedded_fonts no)
+  )
+  (symbol "ATTINY402-SSNR"
+    (in_bom yes)
+    (on_board yes)
+    (property "Reference" "U"
+      (at -5.08 10.16 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Value" "ATTINY402-SSNR"
+      (at 0 -13.97 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (symbol "ATTINY402-SSNR_0_1"
+      (rectangle
+        (start -5.08 8.89)
+        (end 5.08 -8.89)
+        (stroke
+          (width 0.254)
+          (type default)
+        )
+        (fill
+          (type background)
+        )
+      )
+    )
+    (symbol "ATTINY402-SSNR_1_1"
+      (pin power_in line
+        (at 0 11.43 270)
+        (length 2.54)
+        (name "VCC"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+        (number "1"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+      )
+      (pin power_in line
+        (at 0 -11.43 90)
+        (length 2.54)
+        (name "GND"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+        (number "8"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+      )
+      (pin bidirectional line
+        (at -7.62 0 0)
+        (length 2.54)
+        (name "PA0/UPDI"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+        (number "6"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+      )
+      (pin bidirectional line
+        (at -7.62 -2.54 0)
+        (length 2.54)
+        (name "PA3"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+        (number "7"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+      )
+      (pin bidirectional line
+        (at 7.62 5.08 180)
+        (length 2.54)
+        (name "PA1"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+        (number "4"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+      )
+      (pin bidirectional line
+        (at 7.62 2.54 180)
+        (length 2.54)
+        (name "PA2"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+        (number "5"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+      )
+      (pin bidirectional line
+        (at 7.62 -2.54 180)
+        (length 2.54)
+        (name "PA6"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+        (number "2"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+      )
+      (pin bidirectional line
+        (at 7.62 -5.08 180)
+        (length 2.54)
+        (name "PA7"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+        (number "3"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+      )
+    )
+    (property "Footprint" "StrobeGlasses:ATTINY402-SSNR"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Datasheet" "https://ww1.microchip.com/downloads/aemDocuments/documents/MCU08/ProductDocuments/DataSheets/ATtiny202-204-402-404-406-DataSheet-DS40002318A.pdf"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Description" "SOIC-8. Four independent LCD electrode outputs through 2.2k resistors; PA3 preset button; PA0 reserved for UPDI. Direct protected-battery supply."
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Manufacturer" "Microchip"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "MPN" "ATTINY402-SSNR"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Manufacturer Part" "ATTINY402-SSNR"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "DigiKey Part Number" "ATTINY402-SSNRCT-ND"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "DigiKey URL" "https://www.digikey.com/en/products/detail/microchip-technology/ATTINY402-SSNR/9554946"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Selection" "selected"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Sourcing Checked" "2026-11-07"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Rating" "4 KB MCU, SOIC-8"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+  )
+  (symbol "MCP73831T-2ACI_OT"
+    (exclude_from_sim no)
+    (in_bom yes)
+    (on_board yes)
+    (in_pos_files yes)
+    (duplicate_pin_numbers_are_jumpers no)
+    (property "Reference" "U"
+      (at -7.62 6.35 0)
+      (show_name no)
+      (do_not_autoplace no)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (justify left)
+      )
+    )
+    (property "Value" "MCP73831T-2ACI/OT"
+      (at 1.27 6.35 0)
+      (show_name no)
+      (do_not_autoplace no)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (justify left)
+      )
+    )
+    (property "Footprint" "StrobeGlasses:MCP73831T-2ACI_OT"
+      (at 1.27 -6.35 0)
+      (show_name no)
+      (do_not_autoplace no)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+          (italic yes)
+        )
+        (justify left)
+      )
+    )
+    (property "Datasheet" "https://ww1.microchip.com/downloads/aemDocuments/documents/APID/ProductDocuments/DataSheets/MCP73831-Family-Data-Sheet-DS20001984H.pdf"
+      (at 0 -18.288 0)
+      (show_name no)
+      (do_not_autoplace no)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Description" "4.20 V charger, SOT-23-5. 62k PROG gives about 16 mA. Charge with load hard-switched off; no power path."
+      (at 0 0 0)
+      (show_name no)
+      (do_not_autoplace no)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "ki_keywords" "battery charger lithium"
+      (at 0 0 0)
+      (show_name no)
+      (do_not_autoplace no)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "ki_fp_filters" "SOT?23*"
+      (at 0 0 0)
+      (show_name no)
+      (do_not_autoplace no)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (symbol "MCP73831T-2ACI_OT_0_1"
+      (rectangle
+        (start -7.62 5.08)
+        (end 7.62 -5.08)
+        (stroke
+          (width 0.254)
+          (type default)
+        )
+        (fill
+          (type background)
+        )
+      )
+    )
+    (symbol "MCP73831T-2ACI_OT_1_1"
+      (pin tri_state line
+        (at 10.16 -2.54 180)
+        (length 2.54)
+        (name "STAT"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+        (number "1"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+      )
+      (pin power_in line
+        (at 0 -7.62 90)
+        (length 2.54)
+        (name "V_{SS}"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+        (number "2"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+      )
+      (pin power_out line
+        (at 10.16 2.54 180)
+        (length 2.54)
+        (name "V_{BAT}"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+        (number "3"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+      )
+      (pin power_in line
+        (at 0 7.62 270)
+        (length 2.54)
+        (name "V_{DD}"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+        (number "4"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+      )
+      (pin input line
+        (at -10.16 -2.54 0)
+        (length 2.54)
+        (name "PROG"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+        (number "5"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+      )
+    )
+    (embedded_fonts no)
+    (property "MPN" "MCP73831T-2ACI/OT"
+      (at 0 0 0)
+      (effects hide
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Manufacturer" "Microchip"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Manufacturer Part" "MCP73831T-2ACI/OT"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "DigiKey Part Number" "MCP73831T-2ACI/OTCT-ND"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "DigiKey URL" "https://www.digikey.com/en/products/detail/microchip-technology/MCP73831T-2ACI-OT/964301"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Selection" "selected"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Sourcing Checked" "2026-11-07"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Rating" "4.20 V single-cell LiPo charger"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+  )
+  (symbol "USB4125-GF-A"
+    (in_bom yes)
+    (on_board yes)
+    (property "Reference" "J"
+      (at -5.08 10.16 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Value" "USB4125-GF-A"
+      (at 0 -15.24 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (symbol "USB4125-GF-A_0_1"
+      (rectangle
+        (start -7.62 8.89)
+        (end 7.62 -8.89)
+        (stroke
+          (width 0.254)
+          (type default)
+        )
+        (fill
+          (type background)
+        )
+      )
+    )
+    (symbol "USB4125-GF-A_1_1"
+      (pin passive line
+        (at 10.16 5.08 180)
+        (length 2.54)
+        (name "VBUS"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+        (number "A9"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+      )
+      (pin passive line
+        (at 10.16 5.08 180)
+        (length 2.54)
+        (name "VBUS"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+        (number "B9"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+        (hide yes)
+      )
+      (pin passive line
+        (at 10.16 0 180)
+        (length 2.54)
+        (name "CC1"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+        (number "A5"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+      )
+      (pin passive line
+        (at 10.16 -2.54 180)
+        (length 2.54)
+        (name "CC2"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+        (number "B5"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+      )
+      (pin passive line
+        (at 0 -11.43 90)
+        (length 2.54)
+        (name "GND"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+        (number "A12"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+      )
+      (pin passive line
+        (at 0 -11.43 90)
+        (length 2.54)
+        (name "GND"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+        (number "B12"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+        (hide yes)
+      )
+      (pin passive line
+        (at -5.08 -11.43 90)
+        (length 2.54)
+        (name "SHIELD"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+        (number "SH"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+      )
+    )
+    (property "Footprint" "StrobeGlasses:USB4125-GF-A"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Datasheet" "https://gct.co/connector/usb4125"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Description" "6-contact power-only USB-C. A9/B9 VBUS; A12/B12 GND; A5 CC1; B5 CC2; four SH shell tabs. Independent 5.1k CC resistors. Not the -0190 variant."
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Manufacturer" "GCT"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "MPN" "USB4125-GF-A"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Manufacturer Part" "USB4125-GF-A"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "DigiKey Part Number" "2073-USB4125-GF-ACT-ND"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "DigiKey URL" "https://www.digikey.com/en/products/detail/gct/USB4125-GF-A/13547388"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Selection" "selected"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Sourcing Checked" "2026-11-07"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+  )
+  (symbol "B3U-3000P"
+    (pin_numbers
+      (hide yes)
+    )
+    (pin_names
+      (offset 1.016)
+      (hide yes)
+    )
+    (exclude_from_sim no)
+    (in_bom yes)
+    (on_board yes)
+    (in_pos_files yes)
+    (duplicate_pin_numbers_are_jumpers no)
+    (property "Reference" "SW"
+      (at 1.27 2.54 0)
+      (show_name no)
+      (do_not_autoplace no)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (justify left)
+      )
+    )
+    (property "Value" "B3U-3000P"
+      (at 0 -1.524 0)
+      (show_name no)
+      (do_not_autoplace no)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Footprint" "StrobeGlasses:B3U-3000P"
+      (at 0 5.08 0)
+      (show_name no)
+      (do_not_autoplace no)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Datasheet" "https://omronfs.omron.com/en_US/ecb/products/pdf/en-b3u.pdf"
+      (at 0 5.08 0)
+      (show_name no)
+      (do_not_autoplace no)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Description" "100,000 operations; MCU internal pullup; debounce in firmware."
+      (at 0 0 0)
+      (show_name no)
+      (do_not_autoplace no)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "ki_keywords" "switch normally-open pushbutton push-button"
+      (at 0 0 0)
+      (show_name no)
+      (do_not_autoplace no)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (symbol "B3U-3000P_0_1"
+      (circle
+        (center -2.032 0)
+        (radius 0.508)
+        (stroke
+          (width 0)
+          (type default)
+        )
+        (fill
+          (type none)
+        )
+      )
+      (polyline
+        (pts
+          (xy 0 1.27)
+          (xy 0 3.048)
+        )
+        (stroke
+          (width 0)
+          (type default)
+        )
+        (fill
+          (type none)
+        )
+      )
+      (circle
+        (center 2.032 0)
+        (radius 0.508)
+        (stroke
+          (width 0)
+          (type default)
+        )
+        (fill
+          (type none)
+        )
+      )
+      (polyline
+        (pts
+          (xy 2.54 1.27)
+          (xy -2.54 1.27)
+        )
+        (stroke
+          (width 0)
+          (type default)
+        )
+        (fill
+          (type none)
+        )
+      )
+      (pin passive line
+        (at -5.08 0 0)
+        (length 2.54)
+        (name "1"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+        (number "1"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+      )
+      (pin passive line
+        (at 5.08 0 180)
+        (length 2.54)
+        (name "2"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+        (number "2"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+      )
+    )
+    (embedded_fonts no)
+    (property "MPN" "B3U-3000P"
+      (at 0 0 0)
+      (effects hide
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Manufacturer" "Aratas (formerly Omron Components)"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Manufacturer Part" "B3U-3000P"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "DigiKey Part Number" "SW1022CT-ND"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "DigiKey URL" "https://www.digikey.com/en/products/detail/omron-electronics-inc-emc-div/B3U-3000P/1534340"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Selection" "selected"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Sourcing Checked" "2026-11-07"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Rating" "Side-actuated preset button"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+  )
+  (symbol "SM02B-SRSS-TB"
+    (in_bom yes)
+    (on_board yes)
+    (property "Reference" "J"
+      (at 0 3.81 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Value" "Battery · JST-SH 1mm"
+      (at 0 -6.35 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (symbol "SM02B-SRSS-TB_0_1"
+      (rectangle
+        (start -2.54 2.54)
+        (end 2.54 -3.81)
+        (stroke
+          (width 0.254)
+          (type default)
+        )
+        (fill
+          (type background)
+        )
+      )
+    )
+    (symbol "SM02B-SRSS-TB_1_1"
+      (pin passive line
+        (at -5.08 0 0)
+        (length 2.54)
+        (name "+"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+        (number "1"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+      )
+      (pin passive line
+        (at -5.08 -2.54 0)
+        (length 2.54)
+        (name "−"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+        (number "2"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+      )
+    )
+    (property "Footprint" "StrobeGlasses:SM02B-SRSS-TB"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Datasheet" "https://www.jst-mfg.com/product/pdf/eng/eSH.pdf"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Description" "Compact side-entry battery connector. Pin1 intended BAT+; pin2 BAT-. Metal mounting pads unnumbered and electrically unconnected. Requires SH pigtail or PH-to-SH adapter; does not mate directly to Adafruit PH plug. Verify assembled cable polarity."
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Manufacturer" "JST"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "MPN" "SM02B-SRSS-TB"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Manufacturer Part" "SM02B-SRSS-TB"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "DigiKey Part Number" "455-SM02B-SRSS-TBCT-ND"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "DigiKey URL" "https://www.digikey.com/en/products/detail/jst-sales-america-inc/SM02B-SRSS-TB/926708"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Selection" "selected"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Sourcing Checked" "2026-11-07"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+  )
+  (symbol "T491A685K016AT"
+    (pin_numbers
+      (hide yes)
+    )
+    (pin_names
+      (offset 0.254)
+      (hide yes)
+    )
+    (exclude_from_sim no)
+    (in_bom yes)
+    (on_board yes)
+    (in_pos_files yes)
+    (duplicate_pin_numbers_are_jumpers no)
+    (property "Reference" "C"
+      (at 0.254 1.778 0)
+      (show_name no)
+      (do_not_autoplace no)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (justify left)
+      )
+    )
+    (property "Value" "6.8uF / 16V"
+      (at 0.254 -2.032 0)
+      (show_name no)
+      (do_not_autoplace no)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (justify left)
+      )
+    )
+    (property "Footprint" "StrobeGlasses:T491A685K016AT"
+      (at 0 0 0)
+      (show_name no)
+      (do_not_autoplace no)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Datasheet" "https://www.yageogroup.com/component-documentation/download/specsheet/T491A685K016AT"
+      (at 0 0 0)
+      (show_name no)
+      (do_not_autoplace no)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Description" "Charger input and battery capacitors; 6.8uF ±10%, KEMET A-case tantalum. Pad1 positive. Retains capacitance under DC bias. Retained selection; no capacitor substitution implied by library preparation."
+      (at 0 0 0)
+      (show_name no)
+      (do_not_autoplace no)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "ki_keywords" "cap capacitor"
+      (at 0 0 0)
+      (show_name no)
+      (do_not_autoplace no)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "ki_fp_filters" "CP_*"
+      (at 0 0 0)
+      (show_name no)
+      (do_not_autoplace no)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (symbol "T491A685K016AT_0_1"
+      (rectangle
+        (start -1.524 0.6858)
+        (end 1.524 0.3048)
+        (stroke
+          (width 0)
+          (type default)
+        )
+        (fill
+          (type none)
+        )
+      )
+      (rectangle
+        (start -1.524 -0.3048)
+        (end 1.524 -0.6858)
+        (stroke
+          (width 0)
+          (type default)
+        )
+        (fill
+          (type outline)
+        )
+      )
+      (polyline
+        (pts
+          (xy -1.27 1.524)
+          (xy -0.762 1.524)
+        )
+        (stroke
+          (width 0)
+          (type default)
+        )
+        (fill
+          (type none)
+        )
+      )
+      (polyline
+        (pts
+          (xy -1.016 1.27)
+          (xy -1.016 1.778)
+        )
+        (stroke
+          (width 0)
+          (type default)
+        )
+        (fill
+          (type none)
+        )
+      )
+    )
+    (symbol "T491A685K016AT_1_1"
+      (pin passive line
+        (at 0 2.54 270)
+        (length 1.8542)
+        (name ""
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+        (number "1"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+      )
+      (pin passive line
+        (at 0 -2.54 90)
+        (length 1.8542)
+        (name ""
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+        (number "2"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+      )
+    )
+    (embedded_fonts no)
+    (property "MPN" "T491A685K016AT"
+      (at 0 0 0)
+      (effects hide
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Manufacturer" "KEMET"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Manufacturer Part" "T491A685K016AT"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "DigiKey Part Number" "399-10132-1-ND"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "DigiKey URL" "https://www.digikey.com/en/products/detail/kemet/T491A685K016AT/3759249"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Selection" "selected"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Sourcing Checked" "2026-11-07"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Rating" "6.8 µF, 16 V, ±10%, polarized tantalum"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+  )
+  (symbol "C1608X7R1H104K080AA"
+    (in_bom yes)
+    (on_board yes)
+    (property "Reference" "C"
+      (at 3.81 1.27 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (justify left)
+      )
+    )
+    (property "Value" "100nF / 50V"
+      (at 3.81 -1.27 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (justify left)
+      )
+    )
+    (pin_numbers
+      (hide yes)
+    )
+    (pin_names
+      (offset 0)
+      (hide yes)
+    )
+    (symbol "C1608X7R1H104K080AA_0_1"
+      (polyline
+        (pts
+          (xy -2.032 0.508)
+          (xy 2.032 0.508)
+        )
+        (stroke
+          (width 0.254)
+          (type default)
+        )
+        (fill
+          (type none)
+        )
+      )
+      (polyline
+        (pts
+          (xy -2.032 -0.508)
+          (xy 2.032 -0.508)
+        )
+        (stroke
+          (width 0.254)
+          (type default)
+        )
+        (fill
+          (type none)
+        )
+      )
+      (polyline
+        (pts
+          (xy 0 2.54)
+          (xy 0 0.508)
+        )
+        (stroke
+          (width 0.254)
+          (type default)
+        )
+        (fill
+          (type none)
+        )
+      )
+      (polyline
+        (pts
+          (xy 0 -0.508)
+          (xy 0 -2.54)
+        )
+        (stroke
+          (width 0.254)
+          (type default)
+        )
+        (fill
+          (type none)
+        )
+      )
+    )
+    (symbol "C1608X7R1H104K080AA_1_1"
+      (pin passive line
+        (at 0 5.08 270)
+        (length 2.54)
+        (name ""
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+        (number "1"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+      )
+      (pin passive line
+        (at 0 -5.08 90)
+        (length 2.54)
+        (name ""
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+        (number "2"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+      )
+    )
+    (property "Footprint" "StrobeGlasses:C1608X7R1H104K080AA"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Datasheet" "https://product.tdk.com/info/en/documents/chara_sheet/C1608X7R1H104K080AA.pdf"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Description" "MCU local decoupling; 0603, X7R ±10%. JLC-style passive symbol."
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Manufacturer" "TDK"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "MPN" "C1608X7R1H104K080AA"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Manufacturer Part" "C1608X7R1H104K080AA"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "DigiKey Part Number" "445-1314-1-ND"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "DigiKey URL" "https://www.digikey.com/en/products/detail/tdk/C1608X7R1H104K080AA/513811"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Selection" "selected"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Sourcing Checked" "2026-11-07"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Rating" "100 nF, 50 V, X7R, ±10%, 0603"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+  )
+  (symbol "CL10A105KP8NNNC"
+    (in_bom yes)
+    (on_board yes)
+    (property "Reference" "C"
+      (at 3.81 1.27 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (justify left)
+      )
+    )
+    (property "Value" "1uF / 10V"
+      (at 3.81 -1.27 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (justify left)
+      )
+    )
+    (pin_numbers
+      (hide yes)
+    )
+    (pin_names
+      (offset 0)
+      (hide yes)
+    )
+    (symbol "CL10A105KP8NNNC_0_1"
+      (polyline
+        (pts
+          (xy -2.032 0.508)
+          (xy 2.032 0.508)
+        )
+        (stroke
+          (width 0.254)
+          (type default)
+        )
+        (fill
+          (type none)
+        )
+      )
+      (polyline
+        (pts
+          (xy -2.032 -0.508)
+          (xy 2.032 -0.508)
+        )
+        (stroke
+          (width 0.254)
+          (type default)
+        )
+        (fill
+          (type none)
+        )
+      )
+      (polyline
+        (pts
+          (xy 0 2.54)
+          (xy 0 0.508)
+        )
+        (stroke
+          (width 0.254)
+          (type default)
+        )
+        (fill
+          (type none)
+        )
+      )
+      (polyline
+        (pts
+          (xy 0 -0.508)
+          (xy 0 -2.54)
+        )
+        (stroke
+          (width 0.254)
+          (type default)
+        )
+        (fill
+          (type none)
+        )
+      )
+    )
+    (symbol "CL10A105KP8NNNC_1_1"
+      (pin passive line
+        (at 0 5.08 270)
+        (length 2.54)
+        (name ""
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+        (number "1"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+      )
+      (pin passive line
+        (at 0 -5.08 90)
+        (length 2.54)
+        (name ""
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+        (number "2"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+      )
+    )
+    (property "Footprint" "StrobeGlasses:CL10A105KP8NNNC"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Datasheet" "https://media.digikey.com/pdf/Data%20Sheets/Samsung%20PDFs/CL10A105KP8NNNC_Spec.pdf"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Description" "MCU local bulk; 0603 X5R ±10%; nominal capacitance decreases with DC bias. JLC-style passive symbol."
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Manufacturer" "Samsung Electro-Mechanics"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "MPN" "CL10A105KP8NNNC"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Manufacturer Part" "CL10A105KP8NNNC"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "DigiKey Part Number" "1276-1182-1-ND"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "DigiKey URL" "https://www.digikey.com/en/products/detail/samsung-electro-mechanics/CL10A105KP8NNNC/3886840"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Selection" "selected"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Sourcing Checked" "2026-11-07"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Rating" "1 µF, 10 V, X5R, ±10%, 0603"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+  )
+  (symbol "RC0603FR-0762KL"
+    (in_bom yes)
+    (on_board yes)
+    (property "Reference" "R"
+      (at 0 3.016 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Value" "62k"
+      (at 0 -3.016 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (pin_numbers
+      (hide yes)
+    )
+    (pin_names
+      (offset 0)
+      (hide yes)
+    )
+    (symbol "RC0603FR-0762KL_0_1"
+      (rectangle
+        (start -2.54 1.016)
+        (end 2.54 -1.016)
+        (stroke
+          (width 0.254)
+          (type default)
+        )
+        (fill
+          (type background)
+        )
+      )
+    )
+    (symbol "RC0603FR-0762KL_1_1"
+      (pin passive line
+        (at -5.08 0 0)
+        (length 2.54)
+        (name ""
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+        (number "1"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+      )
+      (pin passive line
+        (at 5.08 0 180)
+        (length 2.54)
+        (name ""
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+        (number "2"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+      )
+    )
+    (property "Footprint" "StrobeGlasses:RC0603FR-0762KL"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Datasheet" "https://www.yageogroup.com/component-documentation/download/specsheet/RC0603FR-0762KL"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Description" "Charger RPROG, about 16.13mA nominal; retained conservative charge current."
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Manufacturer" "Yageo"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "MPN" "RC0603FR-0762KL"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Manufacturer Part" "RC0603FR-0762KL"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "DigiKey Part Number" "311-62.0KHRCT-ND"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "DigiKey URL" "https://www.digikey.com/en/products/detail/yageo/RC0603FR-0762KL/730283"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Selection" "selected"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Sourcing Checked" "2026-11-07"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Rating" "62.0 kΩ, ±1%, 0.1 W, 0603"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+  )
+  (symbol "RC0603FR-076K2L"
+    (in_bom yes)
+    (on_board yes)
+    (property "Reference" "R"
+      (at 0 3.016 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Value" "6.2k"
+      (at 0 -3.016 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (pin_numbers
+      (hide yes)
+    )
+    (pin_names
+      (offset 0)
+      (hide yes)
+    )
+    (symbol "RC0603FR-076K2L_0_1"
+      (rectangle
+        (start -2.54 1.016)
+        (end 2.54 -1.016)
+        (stroke
+          (width 0.254)
+          (type default)
+        )
+        (fill
+          (type background)
+        )
+      )
+    )
+    (symbol "RC0603FR-076K2L_1_1"
+      (pin passive line
+        (at -5.08 0 0)
+        (length 2.54)
+        (name ""
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+        (number "1"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+      )
+      (pin passive line
+        (at 5.08 0 180)
+        (length 2.54)
+        (name ""
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+        (number "2"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+      )
+    )
+    (property "Footprint" "StrobeGlasses:RC0603FR-076K2L"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Datasheet" "https://www.yageogroup.com/component-documentation/download/specsheet/RC0603FR-076K2L"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Description" "Optional charge-LED current limiting; fitted with D1 only."
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Manufacturer" "Yageo"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "MPN" "RC0603FR-076K2L"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Manufacturer Part" "RC0603FR-076K2L"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "DigiKey Part Number" "311-6.20KHRCT-ND"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "DigiKey URL" "https://www.digikey.com/en/products/detail/yageo/RC0603FR-076K2L/727319"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Selection" "optional"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Sourcing Checked" "2026-11-07"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Rating" "6.2 kΩ, ±1%, 0.1 W, 0603"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+  )
+  (symbol "RC0603FR-072K2L"
+    (in_bom yes)
+    (on_board yes)
+    (property "Reference" "R"
+      (at 0 3.016 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Value" "2.2k"
+      (at 0 -3.016 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (pin_numbers
+      (hide yes)
+    )
+    (pin_names
+      (offset 0)
+      (hide yes)
+    )
+    (symbol "RC0603FR-072K2L_0_1"
+      (rectangle
+        (start -2.54 1.016)
+        (end 2.54 -1.016)
+        (stroke
+          (width 0.254)
+          (type default)
+        )
+        (fill
+          (type background)
+        )
+      )
+    )
+    (symbol "RC0603FR-072K2L_1_1"
+      (pin passive line
+        (at -5.08 0 0)
+        (length 2.54)
+        (name ""
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+        (number "1"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+      )
+      (pin passive line
+        (at 5.08 0 180)
+        (length 2.54)
+        (name ""
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+        (number "2"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+      )
+    )
+    (property "Footprint" "StrobeGlasses:RC0603FR-072K2L"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Datasheet" "https://www.yageogroup.com/component-documentation/download/specsheet/RC0603FR-072K2L"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Description" "One series resistor in each of four GPIO electrode leads. Two parallel valves per eye branch after the resistor pair. Bench-tested value."
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Manufacturer" "Yageo"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "MPN" "RC0603FR-072K2L"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Manufacturer Part" "RC0603FR-072K2L"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "DigiKey Part Number" "311-2.20KHRCT-ND"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "DigiKey URL" "https://www.digikey.com/en/products/detail/yageo/RC0603FR-072K2L/727016"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Selection" "selected"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Sourcing Checked" "2026-11-07"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Rating" "2.2 kΩ, ±1%, 0.1 W, 0603"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+  )
+  (symbol "RC0603FR-071ML"
+    (in_bom yes)
+    (on_board yes)
+    (property "Reference" "R"
+      (at 0 3.016 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Value" "1M"
+      (at 0 -3.016 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (pin_numbers
+      (hide yes)
+    )
+    (pin_names
+      (offset 0)
+      (hide yes)
+    )
+    (symbol "RC0603FR-071ML_0_1"
+      (rectangle
+        (start -2.54 1.016)
+        (end 2.54 -1.016)
+        (stroke
+          (width 0.254)
+          (type default)
+        )
+        (fill
+          (type background)
+        )
+      )
+    )
+    (symbol "RC0603FR-071ML_1_1"
+      (pin passive line
+        (at -5.08 0 0)
+        (length 2.54)
+        (name ""
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+        (number "1"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+      )
+      (pin passive line
+        (at 5.08 0 180)
+        (length 2.54)
+        (name ""
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+        (number "2"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+      )
+    )
+    (property "Footprint" "StrobeGlasses:RC0603FR-071ML"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Datasheet" "https://www.yageogroup.com/component-documentation/download/specsheet/RC0603FR-071ML"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Description" "One bleeder across each eye pair; discharges glass when MCU pins are high impedance."
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Manufacturer" "Yageo"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "MPN" "RC0603FR-071ML"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Manufacturer Part" "RC0603FR-071ML"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "DigiKey Part Number" "311-1.00MHRCT-ND"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "DigiKey URL" "https://www.digikey.com/en/products/detail/yageo/RC0603FR-071ML/729791"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Selection" "selected"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Sourcing Checked" "2026-11-07"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Rating" "1 MΩ, ±1%, 0.1 W, 0603"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+  )
+  (symbol "CRCW06035K10FKEA"
+    (in_bom yes)
+    (on_board yes)
+    (property "Reference" "R"
+      (at 0 3.016 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Value" "5.1k"
+      (at 0 -3.016 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (pin_numbers
+      (hide yes)
+    )
+    (pin_names
+      (offset 0)
+      (hide yes)
+    )
+    (symbol "CRCW06035K10FKEA_0_1"
+      (rectangle
+        (start -2.54 1.016)
+        (end 2.54 -1.016)
+        (stroke
+          (width 0.254)
+          (type default)
+        )
+        (fill
+          (type background)
+        )
+      )
+    )
+    (symbol "CRCW06035K10FKEA_1_1"
+      (pin passive line
+        (at -5.08 0 0)
+        (length 2.54)
+        (name ""
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+        (number "1"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+      )
+      (pin passive line
+        (at 5.08 0 180)
+        (length 2.54)
+        (name ""
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+        (number "2"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+      )
+    )
+    (property "Footprint" "StrobeGlasses:CRCW06035K10FKEA"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Datasheet" "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Description" "In-stock alternative to Yageo 5.1k at sourcing check. 0603 ±1%, 0.125W. Separate USB-C CC1 and CC2 pull-downs."
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Manufacturer" "Vishay Dale"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "MPN" "CRCW06035K10FKEA"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Manufacturer Part" "CRCW06035K10FKEA"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "DigiKey Part Number" "541-5.10KHCT-ND"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "DigiKey URL" "https://www.digikey.com/en/products/detail/vishay-dale/CRCW06035K10FKEA/1174748"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Selection" "selected"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Sourcing Checked" "2026-11-07"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Rating" "5.1kohm ±1%, 0.125W, 0603"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+  )
+  (symbol "LTST-C190KFKT"
+    (pin_numbers
+      (hide yes)
+    )
+    (pin_names
+      (offset 1.016)
+      (hide yes)
+    )
+    (exclude_from_sim no)
+    (in_bom yes)
+    (on_board yes)
+    (in_pos_files yes)
+    (duplicate_pin_numbers_are_jumpers no)
+    (property "Reference" "D"
+      (at 0 2.54 0)
+      (show_name no)
+      (do_not_autoplace no)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Value" "Orange"
+      (at 0 -5.08 0)
+      (show_name no)
+      (do_not_autoplace no)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Footprint" "StrobeGlasses:LTST-C190KFKT"
+      (at 0 0 0)
+      (show_name no)
+      (do_not_autoplace no)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Datasheet" "https://media.digikey.com/pdf/Data%20Sheets/Lite-On%20PDFs/LTST-C190KFKT.pdf"
+      (at 0 0 0)
+      (show_name no)
+      (do_not_autoplace no)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Description" "Optional VBUS-fed charge indicator with 6.2k R7; VBUS -> R7 -> LED anode, LED cathode -> charger STAT. Pad1 cathode, pad2 anode. Lights while STAT is low (charging)."
+      (at 0 0 0)
+      (show_name no)
+      (do_not_autoplace no)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Sim.Pins" "1=K 2=A"
+      (at 0 0 0)
+      (show_name no)
+      (do_not_autoplace no)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "ki_keywords" "LED diode"
+      (at 0 0 0)
+      (show_name no)
+      (do_not_autoplace no)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "ki_fp_filters" "LED* LED_SMD:* LED_THT:*"
+      (at 0 0 0)
+      (show_name no)
+      (do_not_autoplace no)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (symbol "LTST-C190KFKT_0_1"
+      (polyline
+        (pts
+          (xy -3.048 -0.762)
+          (xy -4.572 -2.286)
+          (xy -3.81 -2.286)
+          (xy -4.572 -2.286)
+          (xy -4.572 -1.524)
+        )
+        (stroke
+          (width 0)
+          (type default)
+        )
+        (fill
+          (type none)
+        )
+      )
+      (polyline
+        (pts
+          (xy -1.778 -0.762)
+          (xy -3.302 -2.286)
+          (xy -2.54 -2.286)
+          (xy -3.302 -2.286)
+          (xy -3.302 -1.524)
+        )
+        (stroke
+          (width 0)
+          (type default)
+        )
+        (fill
+          (type none)
+        )
+      )
+      (polyline
+        (pts
+          (xy -1.27 0)
+          (xy 1.27 0)
+        )
+        (stroke
+          (width 0)
+          (type default)
+        )
+        (fill
+          (type none)
+        )
+      )
+      (polyline
+        (pts
+          (xy -1.27 -1.27)
+          (xy -1.27 1.27)
+        )
+        (stroke
+          (width 0.254)
+          (type default)
+        )
+        (fill
+          (type none)
+        )
+      )
+      (polyline
+        (pts
+          (xy 1.27 -1.27)
+          (xy 1.27 1.27)
+          (xy -1.27 0)
+          (xy 1.27 -1.27)
+        )
+        (stroke
+          (width 0.254)
+          (type default)
+        )
+        (fill
+          (type none)
+        )
+      )
+    )
+    (symbol "LTST-C190KFKT_1_1"
+      (pin passive line
+        (at -3.81 0 0)
+        (length 2.54)
+        (name "K"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+        (number "1"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+      )
+      (pin passive line
+        (at 3.81 0 180)
+        (length 2.54)
+        (name "A"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+        (number "2"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+      )
+    )
+    (embedded_fonts no)
+    (property "MPN" "LTST-C190KFKT"
+      (at 0 0 0)
+      (effects hide
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Manufacturer" "Lite-On"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Manufacturer Part" "LTST-C190KFKT"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "DigiKey Part Number" "160-1434-1-ND"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "DigiKey URL" "https://www.digikey.com/en/products/detail/liteon/LTST-C190KFKT/386813"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Selection" "optional"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Sourcing Checked" "2026-11-07"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Rating" "Orange charge LED, 0603"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+  )
+  (symbol "SM02B-SRSS-TB_LCD"
+    (in_bom yes)
+    (on_board yes)
+    (property "Reference" "J"
+      (at 0 3.81 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Value" "JST-SH 1mm"
+      (at 0 -6.35 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (symbol "SM02B-SRSS-TB_LCD_0_1"
+      (rectangle
+        (start -2.54 2.54)
+        (end 2.54 -3.81)
+        (stroke
+          (width 0.254)
+          (type default)
+        )
+        (fill
+          (type background)
+        )
+      )
+    )
+    (symbol "SM02B-SRSS-TB_LCD_1_1"
+      (pin passive line
+        (at -5.08 0 0)
+        (length 2.54)
+        (name "A"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+        (number "1"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+      )
+      (pin passive line
+        (at -5.08 -2.54 0)
+        (length 2.54)
+        (name "B"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+        (number "2"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+      )
+    )
+    (property "Footprint" "StrobeGlasses:SM02B-SRSS-TB_LCD"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Datasheet" "https://www.jst-mfg.com/product/pdf/eng/eSH.pdf"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Description" "Two independent offboard eye connectors. Pin1 electrode A; pin2 electrode B; no permanent polarity. Two parallel light valves per eye. 1Mohm bleeder spans each connector after both 2.2kohm GPIO series resistors. Same purchased JST-SH header as J2; mechanical mounting pads unconnected."
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Manufacturer" "JST"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "MPN" "SM02B-SRSS-TB"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Manufacturer Part" "SM02B-SRSS-TB"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "DigiKey Part Number" "455-SM02B-SRSS-TBCT-ND"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "DigiKey URL" "https://www.digikey.com/en/products/detail/jst-sales-america-inc/SM02B-SRSS-TB/926708"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Selection" "selected"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Sourcing Checked" "2026-11-07"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+  )
+  (symbol "SLW-662712-15A-SMT-TR"
+    (pin_names
+      (offset 0)
+      (hide yes)
+    )
+    (exclude_from_sim no)
+    (in_bom yes)
+    (on_board yes)
+    (in_pos_files yes)
+    (duplicate_pin_numbers_are_jumpers no)
+    (property "Reference" "SW"
+      (at 0 5.08 0)
+      (show_name no)
+      (do_not_autoplace no)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Value" "SLW-662712-15A-SMT-TR"
+      (at 0 -5.08 0)
+      (show_name no)
+      (do_not_autoplace no)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Footprint" "StrobeGlasses:SLW-662712-15A-SMT-TR"
+      (at 0 0 0)
+      (show_name no)
+      (do_not_autoplace no)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Datasheet" "https://www.sameskydevices.com/product/resource/slw-662712-15a-smt-tr.pdf"
+      (at 0 -7.62 0)
+      (show_name no)
+      (do_not_autoplace no)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Description" "Compact SMT hard power switch replacing JS102011SAQN. Pin2 common; pin1 ON; pin3 unused. Body6.6x2.75mm, nominal1.2mm profile; reserve1.4mm above PCB per front view plus actuator travel. Manufacturer rev1.0 p2 land pattern; model is a simplified envelope including full actuator sweep and locating pegs. Charge with SW1 OFF."
+      (at 0 0 0)
+      (show_name no)
+      (do_not_autoplace no)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "ki_keywords" "switch single-pole double-throw spdt ON-ON"
+      (at 0 0 0)
+      (show_name no)
+      (do_not_autoplace no)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (symbol "SLW-662712-15A-SMT-TR_0_1"
+      (circle
+        (center -2.032 0)
+        (radius 0.4572)
+        (stroke
+          (width 0)
+          (type default)
+        )
+        (fill
+          (type none)
+        )
+      )
+      (polyline
+        (pts
+          (xy -1.651 0.254)
+          (xy 1.651 2.286)
+        )
+        (stroke
+          (width 0)
+          (type default)
+        )
+        (fill
+          (type none)
+        )
+      )
+      (circle
+        (center 2.032 2.54)
+        (radius 0.4572)
+        (stroke
+          (width 0)
+          (type default)
+        )
+        (fill
+          (type none)
+        )
+      )
+      (circle
+        (center 2.032 -2.54)
+        (radius 0.4572)
+        (stroke
+          (width 0)
+          (type default)
+        )
+        (fill
+          (type none)
+        )
+      )
+    )
+    (symbol "SLW-662712-15A-SMT-TR_1_1"
+      (rectangle
+        (start -3.175 3.81)
+        (end 3.175 -3.81)
+        (stroke
+          (width 0)
+          (type default)
+        )
+        (fill
+          (type background)
+        )
+      )
+      (pin passive line
+        (at 5.08 2.54 180)
+        (length 2.54)
+        (name "A"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+        (number "1"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+      )
+      (pin passive line
+        (at -5.08 0 0)
+        (length 2.54)
+        (name "B"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+        (number "2"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+      )
+      (pin passive line
+        (at 5.08 -2.54 180)
+        (length 2.54)
+        (name "C"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+        (number "3"
+          (effects
+            (font
+              (size 1.27 1.27)
+            )
+          )
+        )
+      )
+    )
+    (embedded_fonts no)
+    (property "MPN" "SLW-662712-15A-SMT-TR"
+      (at 0 0 0)
+      (effects hide
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Manufacturer" "Same Sky (formerly CUI Devices)"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Manufacturer Part" "SLW-662712-15A-SMT-TR"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "DigiKey Part Number" "2223-SLW-662712-15A-SMT-TRCT-ND"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "DigiKey URL" "https://www.digikey.com/en/products/detail/same-sky-formerly-cui-devices/SLW-662712-15A-SMT-TR/29706052"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Selection" "selected"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Sourcing Checked" "2026-11-07"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Rating" "SPDT, non-shorting, 6VDC, 300mA; body6.6x2.75mm; 1.2mm nominal profile; front drawing1.4mm above board"
+      (at 0 0 0)
+      (hide yes)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+  )
+)

@@ -1,0 +1,19 @@
+**/build/
+**/__pycache__/
+*.pyc
+.DS_Store
+
+# KiCad local state and backups
+*.kicad_prl
+*.lck
+*.kicad_sch-bak
+fp-info-cache
+**/#auto_saved_files#
+**/_autosave-*
+*-backups/
+.history/
+
+# Local experiments and references
+/bench/
+/firmware/esp32_valve_test/
+/hardware-library/sources/*.pdf

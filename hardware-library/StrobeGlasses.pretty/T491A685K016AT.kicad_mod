@@ -1,0 +1,179 @@
+(footprint "T491A685K016AT"
+  (version 20260206)
+  (generator "kicad-footprint-generator")
+  (layer "F.Cu")
+  (descr "KEMET A-case3216-18 polarized tantalum; pad1positive, pad2negative")
+  (tags "capacitor tantalum")
+  (property "Reference" "REF**"
+    (at 0 -1.75 0)
+    (layer "F.SilkS")
+    (effects
+      (font
+        (size 1 1)
+        (thickness 0.15)
+      )
+    )
+  )
+  (property "Value" "T491A685K016AT"
+    (at 0 1.75 0)
+    (layer "F.Fab")
+    (effects
+      (font
+        (size 1 1)
+        (thickness 0.15)
+      )
+    )
+  )
+  (property "KiLib_Generator" "SMD_2terminal_chip_molded"
+    (at 0 0 0)
+    (layer "F.SilkS")
+    (hide yes)
+    (effects
+      (font
+        (size 1 1)
+        (thickness 0.15)
+      )
+    )
+  )
+  (attr smd)
+  (duplicate_pad_numbers_are_jumpers no)
+  (fp_rect
+    (start -2.49 -1.05)
+    (end 2.49 1.05)
+    (stroke
+      (width 0.05)
+      (type solid)
+    )
+    (fill no)
+    (layer "F.CrtYd")
+  )
+  (fp_line
+    (start -1.6 -0.4)
+    (end -1.6 0.8)
+    (stroke
+      (width 0.1)
+      (type solid)
+    )
+    (layer "F.Fab")
+  )
+  (fp_line
+    (start -1.6 0.8)
+    (end 1.6 0.8)
+    (stroke
+      (width 0.1)
+      (type solid)
+    )
+    (layer "F.Fab")
+  )
+  (fp_line
+    (start -1.2 -0.8)
+    (end -1.6 -0.4)
+    (stroke
+      (width 0.1)
+      (type solid)
+    )
+    (layer "F.Fab")
+  )
+  (fp_line
+    (start 1.6 -0.8)
+    (end -1.2 -0.8)
+    (stroke
+      (width 0.1)
+      (type solid)
+    )
+    (layer "F.Fab")
+  )
+  (fp_line
+    (start 1.6 0.8)
+    (end 1.6 -0.8)
+    (stroke
+      (width 0.1)
+      (type solid)
+    )
+    (layer "F.Fab")
+  )
+  (fp_text user "${REFERENCE}"
+    (at 0 0 0)
+    (layer "F.Fab")
+    (effects
+      (font
+        (size 0.8 0.8)
+        (thickness 0.12)
+      )
+    )
+  )
+  (pad "1" smd roundrect
+    (at -1.44 0)
+    (size 1.59 1.39)
+    (layers "F.Cu" "F.Mask" "F.Paste")
+    (roundrect_rratio 0.179856)
+  )
+  (pad "2" smd roundrect
+    (at 1.44 0)
+    (size 1.59 1.39)
+    (layers "F.Cu" "F.Mask" "F.Paste")
+    (roundrect_rratio 0.179856)
+  )
+  (embedded_fonts no)
+  (model "${KIPRJMOD}/../hardware-library/3dmodels/CP_EIA-3216-18_Kemet-A.step"
+    (offset
+      (xyz 0 0 0)
+    )
+    (scale
+      (xyz 1 1 1)
+    )
+    (rotate
+      (xyz 0 0 0)
+    )
+  )
+  (property "Manufacturer" "KEMET"
+    (at 0 0 0)
+    (layer "F.Fab")
+    (hide yes)
+    (effects
+      (font
+        (size 1.0 1.0)
+      )
+    )
+  )
+  (property "MPN" "T491A685K016AT"
+    (at 0 0 0)
+    (layer "F.Fab")
+    (hide yes)
+    (effects
+      (font
+        (size 1.0 1.0)
+      )
+    )
+  )
+  (property "DigiKey Part Number" "399-10132-1-ND"
+    (at 0 0 0)
+    (layer "F.Fab")
+    (hide yes)
+    (effects
+      (font
+        (size 1.0 1.0)
+      )
+    )
+  )
+  (property "DigiKey URL" "https://www.digikey.com/en/products/detail/kemet/T491A685K016AT/3759249"
+    (at 0 0 0)
+    (layer "F.Fab")
+    (hide yes)
+    (effects
+      (font
+        (size 1.0 1.0)
+      )
+    )
+  )
+  (property "Datasheet" "https://www.yageogroup.com/component-documentation/download/specsheet/T491A685K016AT"
+    (at 0 0 0)
+    (layer "F.Fab")
+    (hide yes)
+    (effects
+      (font
+        (size 1.0 1.0)
+      )
+    )
+  )
+)

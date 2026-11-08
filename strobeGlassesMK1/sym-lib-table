@@ -1,0 +1,4 @@
+(sym_lib_table
+  (version 7)
+  (lib (name "StrobeGlasses")(type "KiCad")(uri "${KIPRJMOD}/../hardware-library/StrobeGlasses.kicad_sym")(options "")(descr "Project-local, sourced parts"))
+)

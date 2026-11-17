@@ -1,40 +1,43 @@
 # MK1 Slim
 
-Two shallow 20° lens carriers join at a rounded nose arch. The shoulders
-sweep into the temples. A shared retainer snaps into the shoulders.
-The blue rings in the CAD views represent the cut black foam pads. The
-PCB closes the battery pocket with its two existing M2 screws.
+The brow rolls over two flat, 20° lens bays and sweeps into the strap eyes.
+The frame and the shared snap-in retainer are the two printed parts. The
+right arm carries the board over the battery. The shallow grooves above the
+lenses can take a paint accent after printing.
 
 ## Print and assemble
 
-1. Print the coupons in `snap-test/` and `strap-test/` with the same resin,
-   orientation and cure you plan to use for the frame. Test that the snap
-   holds and releases, and thread your actual band. Press the snap spring
-   toward the lens to release it.
-2. In the resin slicer, angle the frame and retainer so the openings and
-   battery pocket drain. Keep supports off the glass seats, snap passages,
-   insert bores and visible face. Tilt the lead exit downhill so the
-   battery pocket drains through it. Inspect the ceilings of the strap
-   slots and both terminal bays before printing.
-   [Example tough black resin](https://www.resione.com/products/k-plus)
-3. Load two Adafruit 3627 valves per eye from the rear along each lens
-   carrier, front valve first. Match their optical orientation. Cut the
-   perimeter spacers from 0.5 mm matte black insulating sheet using
-   `valve-spacer-template.svg`.
-   Two lower stops locate the front valve 1.5 mm higher. The cavity gives
-   a maximum size panel 0.30 mm of clearance along each edge. Use soft
-   perimeter shims sized to the actual stack to prevent rattle. Press the
-   retainer straight forward into both latches. Squeeze the latches toward
-   the lenses and pull the retainer straight back to remove it.
+1. Start with `lens-test/lens_bay.stl` and `lens-test/lens_retainer.stl`.
+   These are cuts from the finished parts. Try two actual wired panels, a
+   spacer and the latch in this single bay. Use the separate strap and
+   insert coupons to check your elastic and brass inserts.
+2. For PETG, the frame STL sits upright on two flat lands under the lenses.
+   Start with a 0.4 mm nozzle, 0.20 mm layers, four walls, a 4 mm brim and
+   removable supports under the arms and across the optical openings. Inspect
+   the support preview around the clips and the wire exits. For tough resin,
+   tilt the parts with the battery lead exit downhill and put support marks
+   away from the lens seats and the brow.
+3. Load the shutters from the wearer side with their terminals up and
+   optical orientations matched. Seat the front valve on the two lower
+   stops, add the 0.50 mm insulating perimeter spacer and slide in the
+   rear valve. The stops stagger the terminals by 2.0 mm. Cut the spacers
+   using `valve-spacer-template.svg`. Fit soft edge shims to take up
+   rattle in the actual stack before closing the frame.
+   Press the shared retainer straight forward at its two outer edges.
+   Both hooks flex inward and spring behind shoulders in the frame with
+   0.50 mm of nominal engagement. Pinch the two raised lands 0.90 mm
+   toward the lenses and draw the carrier straight back to release it.
 4. The shallow assembly uses terminals shortened to about 3.5 mm from
-   the bend. Fit the short insulated solder joints in the top openings and
+   the bend. The modeled insulated joints are 2.4 mm wide and 1.5 mm high,
+   with 0.50 mm between the front and rear joints. Try your soldered and
+   sleeved pair in the single-eye coupon. Fit the joints in the top openings and
    route the flexible pigtails out along the brow. Connect each eye's two
    valves in parallel. Keep the joints off the skin-facing edge and cover
    the open cable passages with thin opaque tape after the wiring fits.
    [Valve drawing](https://cdn-shop.adafruit.com/product-files/3627/C10669_new_edition_GDC1260AA.pdf)
-5. Glue the two brass inserts into the cured frame with a small amount of
-   two-part epoxy on the outside of the inserts. Keep the threads clean
-   and let the epoxy cure. Drop the battery into the pocket with its wires
+5. Seat two M2 × 3 inserts flush. Heat-set them in the Ø3.2 mm PETG bores
+   before fitting the cell. Bond them into the Ø3.8 mm cured-resin bores
+   using epoxy and let it cure. Drop the battery into the pocket with its wires
    pointing toward the glasses. Route the lead through the front opening
    and under the board edge to J2. Tighten the two M2 screws through the
    existing PCB notches. The board should seat on both posts and capture
@@ -64,7 +67,7 @@ with `foam-shim-template.svg`. Add one layer where needed and taper the
 ends into the face pad. Keep each strip backed by the pad underneath.
 Try the strips provisionally and check normal head movements before bonding.
 The 126 mm temple measurement sets the fit target, and the straight inner
-arms are 138 mm apart. The hard anchor tabs span 143 mm on the outside.
+arms are 138 mm apart. The strap bars span about 143 mm on the outside.
 
 Use 3/4″ flat elastic in the 20.8 × 4.2 mm slots. Thread one end through,
 fold a 25 mm return back, and bar-tack it to itself. On the other end,
@@ -93,7 +96,7 @@ the insert maker's Ø3.2 mm heat-set pilot. [Insert dimensions](https://cnckitch
 
 ## CAD and print checks
 
-- Measured perpendicular to each LCD, the rigid optical stack is 7.25 mm.
+- The front and rear design datums are 7.25 mm apart along the lens normal.
   The retainer plate is 1.05 mm thick, with 1.25 mm at the snap beams.
   One foam layer brings local depth to 10.43 mm and two to 13.60 mm before
   compression.
@@ -101,13 +104,13 @@ the insert maker's Ø3.2 mm heat-set pilot. [Insert dimensions](https://cnckitch
   glass with one layer and 5.53 mm behind it with two. The wearer’s cornea
   and lashes sit at a different depth from that plane. Check actual fit
   with the glasses unpowered.
-- The front seat is 1.10 mm thick. The snap channel opens inward near its
-  entry and uses an outer catch shoulder. Each spring beam is 1.30 mm wide.
-  The nose relief has a 0.50 mm edge radius at the bridge.
+- The 34.4 × 31.2 mm front bevel tapers to the 32 × 28.3 mm optical bore.
+  The snap channel opens inward at its entry. The 1.30 mm wide spring
+  beam has 0.30 mm nominal lateral clearance in the straight guide.
 - The maximum size panes have 0.30 mm of side clearance, with 0.25 mm
   available at the front seat and 0.35 mm at the rear for soft shims. Check
   those shims against the actual panel thickness before seating the retainer.
-- The snap check moves both hooks through withdrawal with 0.60 mm inward
+- The snap check moves both hooks through withdrawal with 0.90 mm inward
   travel. The cured coupon checks actual flex and print tolerance.
 - Straight through, the 32 × 28.3 mm rounded apertures clear both foam pads
   and the retainer. The wearer view shows their alignment.
@@ -130,9 +133,16 @@ Use CadQuery 2.8 with `build_slim.py`. The PCB STEP uses the origin
 MK1 board. Run the command from the extracted download folder.
 
 ```sh
-python source/build_slim.py --pcb-step reference/mk1-pcb.step --output build
+python source/build_slim.py --pcb-step reference/mk1-pcb.step --insert-diameter 3.2 --output build
 ```
 
+Check rear loading, terminal clearance, both hooks and access to the release
+lands with `python source/check_lens_fit.py build`. Its lens sweep adds
+0.15 mm at each edge of the maximum panel envelope. The released-hook
+sweep adds 0.30 mm at each side and above and below. These are modeled
+print-error allowances. Try the single-eye coupon on your machine.
+
+The command above builds the PETG version. Use `--insert-diameter 3.8` for resin.
 Pass `--foam-layers 1` to export the one-layer assembly.
 Use `--wrap-degrees 0` for the flat comparison. For a repository checkout,
 generate the populated board STEP from the project root with KiCad CLI.

@@ -9,11 +9,11 @@ import cadquery as cq
 
 from slim_frame import (
     SlimFrameParams, build_foam_reference, build_glass_references,
-    build_slim_frame, build_snap_coupon, curved_bridge_band, cut_snap_channels,
-    cut_templates, design_metadata,
+    build_slim_frame, build_snap_coupon, curved_bridge_band,
+    cut_templates, design_metadata, engraving_skin,
 )
 from slim_mount import (
-    TEMPLE_CLEARANCE_PER_SIDE, design_data, make_keepouts, make_mounts,
+    TEMPLE_CLEARANCE_PER_SIDE, design_data, insert_coupon, make_keepouts, make_shell, pcb_supports,
     make_references, make_strap_references, pcb_location, strap_coupon,
 )
 
@@ -79,20 +79,31 @@ def export_mesh(shape, path):
         raise RuntimeError(f"Could not export {path}")
 
 
+def export_lens_coupon(frame, retainer, p, output):
+    """One complete pocket and latch for trying a pair of actual wired shutters."""
+    inside_x = p.pd / 2 - p.glass_w / 2 - 6
+    width = p.glass_w + 16
+    crop = (cq.Workplane("XY").box(width, 38, 52, centered=(False, False, True))
+            .translate((inside_x, -17, 0)).val())
+    folder = output / "lens-test"
+    folder.mkdir(exist_ok=True)
+    for name, part, angle in (("lens_bay", frame, 0), ("lens_retainer", retainer, 90)):
+        sample = part.intersect(crop)
+        if not sample.isValid() or len(sample.Solids()) != 1:
+            raise ValueError(f"Invalid {name} fit coupon")
+        export_mesh(on_print_bed(sample, angle), folder / f"{name}.stl")
+
+
 def engrave_wordmark(frame, params):
     """Cut the lowercase wordmark into the center brow, facing forward."""
-    skin = curved_bridge_band(params, params.front_y + .01, .39).val()
-    bounds = skin.BoundingBox()
+    bounds = curved_bridge_band(params, params.front_y + .01, 1.8).val().BoundingBox()
     plane = cq.Plane(origin=(0, bounds.ymax + .1, 18.2),
                      xDir=(-1, 0, 0), normal=(0, 1, 0))
     letters = cq.Workplane(plane).text("rivercraft", 3.7, -bounds.ylen - .2, font="Arial",
                                       kind="bold", combine=False).solids().vals()
-    if not letters:
-        raise ValueError("No solid lettering returned for the rivercraft engraving")
-    stamps = [letter.intersect(skin) for letter in letters]
-    for stamp in stamps:
-        if stamp.Volume() < .04 or overlap(frame, stamp) < 0.55 * stamp.Volume():
-            raise ValueError("The rivercraft engraving falls off the center brow")
+    if len(letters) < len("rivercraft"):
+        raise ValueError("Incomplete rivercraft engraving")
+    stamps = [engraving_skin(frame, letter, (0, -.38, 0)) for letter in letters]
     return frame.cut(*stamps).clean()
 
 
@@ -140,12 +151,10 @@ def build(params, mount_x, pcb_step, output, insert_diameter, insert_depth):
     print_dir.mkdir(parents=True, exist_ok=True)
     preview_dir.mkdir(exist_ok=True)
 
-    printable = {name: as_shape(shape) for name, shape in build_slim_frame(params).items()}
-    mounts = make_mounts(mount_x, insert_diameter, insert_depth, frame_params=params)
-    frame = printable["slim_frame"].fuse(
-        *(as_shape(s) for s in mounts.values())
-    ).clean()
-    printable["slim_frame"] = engrave_wordmark(cut_snap_channels(frame, params), params)
+    optics = build_slim_frame(params, make_shell(params))
+    printable = {name: as_shape(shape) for name, shape in optics.items()}
+    frame = printable["slim_frame"].fuse(pcb_supports(mount_x, insert_diameter, insert_depth)).clean()
+    printable["slim_frame"] = engrave_wordmark(frame, params)
     # The stiff arm roots taper through the soft gasket's outside corners.
     # Trim the foam model to those roots, as with the hand-cut foam blank.
     foam = {
@@ -168,7 +177,7 @@ def build(params, mount_x, pcb_step, output, insert_diameter, insert_depth):
         preview = preview_dir / f"{name}.stl"
         export_mesh(shape, preview)
         if name in printable:
-            angle = 90 if name == "shared_retainer" else -90
+            angle = 90 if name == "shared_retainer" else 0
             export_mesh(on_print_bed(shape, angle), print_dir / f"{name}.stl")
         surface = material(name)
         assembly.add(shape, name=name,
@@ -210,19 +219,24 @@ def build(params, mount_x, pcb_step, output, insert_diameter, insert_depth):
     (output / "geometry.json").write_text(json.dumps(report, indent=2) + "\n")
     for name, (label, outlines) in cut_templates(params).items():
         export_stencil(outlines, label, output / name)
+    export_lens_coupon(printable["slim_frame"], printable["shared_retainer"], params, output)
     coupon_dir = output / "snap-test"
     coupon_dir.mkdir(exist_ok=True)
     for name, shape in build_snap_coupon(printable, params).items():
         if not shape.isValid() or len(shape.Solids()) != 1:
             raise ValueError(f"{name}: invalid snap coupon")
-        angle = 90 if "retainer" in name else -90
+        angle = 90 if "retainer" in name else 0
         export_mesh(on_print_bed(shape, angle), coupon_dir / f"{name}.stl")
     strap_dir = output / "strap-test"
     strap_dir.mkdir(exist_ok=True)
-    eye_sample = strap_coupon(mount_x)
+    eye_sample = strap_coupon(printable["slim_frame"], mount_x)
     if not eye_sample.isValid() or len(eye_sample.Solids()) != 1:
         raise ValueError("Invalid strap coupon")
-    export_mesh(on_print_bed(eye_sample, -90), strap_dir / "strap_anchor_coupon.stl")
+    export_mesh(on_print_bed(eye_sample, 0), strap_dir / "strap_anchor_coupon.stl")
+    insert_sample = insert_coupon(printable["slim_frame"], mount_x)
+    if not insert_sample.isValid() or len(insert_sample.Solids()) != 1:
+        raise ValueError("Invalid insert coupon")
+    export_mesh(on_print_bed(insert_sample, 0), output / "insert-coupon.stl")
     if collisions:
         raise ValueError(f"Interferences: {collisions}")
     print(f"Saved {len(printable)} print parts and the assembly to {output}")
@@ -237,7 +251,7 @@ def main():
     parser.add_argument("--insert-diameter", type=float, default=3.8)
     parser.add_argument("--insert-depth", type=float, default=4.0)
     parser.add_argument("--pcb-step", type=Path, default=HERE / "build/reference/mk1-pcb.step")
-    parser.add_argument("--output", type=Path, default=HERE / "build/mk1-fit-r3")
+    parser.add_argument("--output", type=Path, default=HERE / "build/mk1-sculpted")
     args = parser.parse_args()
     if not args.pcb_step.is_file():
         parser.error(f"Missing the populated PCB STEP at {args.pcb_step}")

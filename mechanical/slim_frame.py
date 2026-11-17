@@ -19,17 +19,17 @@ class SlimFrameParams:
     glass_h: float = 36.2
     glass_thickness: float = 2.0
     pane_gap: float = 0.5
-    pane_stagger: float = 1.5
+    pane_stagger: float = 2.0
     pocket_clearance: float = 0.30
     seat_y: float = 2.50
     stop_y: float = -2.60
     aperture_w: float = 32.0
     aperture_h: float = 28.3
-    front_entry_w: float = 33.4
-    front_entry_h: float = 29.5
+    front_entry_w: float = 34.4
+    front_entry_h: float = 31.2
     retainer_thickness: float = 1.05
     latch_thickness: float = 1.25
-    latch_deflection: float = 0.60
+    latch_deflection: float = 0.90
     latch_beam_width: float = 1.30
     foam_thickness: float = 3.175
     foam_layers: int = 2
@@ -39,6 +39,12 @@ class SlimFrameParams:
     @property
     def pane_y(self):
         return (self.glass_thickness + self.pane_gap) / 2
+
+    @property
+    def aperture_z(self):
+        # With the terminals up, the 31 mm active area lies 1 mm below the
+        # center of each pane. Center the bore in the overlap of both areas.
+        return self.pane_stagger / 2 - 1.0
 
     @property
     def foam_y(self):
@@ -99,25 +105,36 @@ def curved_bridge_band(p, face_y, axial_depth):
             .lineTo(-half_width, outer - depth).close().extrude(48))
 
 
-def _rim(p):
-    # Use full corner arcs and a soft roll at the visible edge. The glass
-    # cavity is cut separately so the curves do not dictate its shape.
-    corners = [(-20.85, -20.70), (20.85, -20.70), (21.10, 22.20), (-20.85, 22.12)]
-    rim = (_xz(p.front_y, p.pd / 2).sketch().polygon(corners).vertices()
-           .fillet(5.0).finalize().extrude(p.front_y - p.stop_y))
-    return rim.faces(">Y").edges().fillet(1.15)
-
-
 def _aperture(p, y, depth, x=0):
-    return _rounded(p.aperture_w, p.aperture_h, 3.6, y, depth, x, -.25)
+    return _rounded(p.aperture_w, p.aperture_h, 3.6, y, depth, x, p.aperture_z)
 
 
 def _front_flare(p, x):
     front = _rounded(p.front_entry_w, p.front_entry_h, 4.25,
-                     p.front_y + .02, .05, x, -.25)
+                     p.front_y + .02, .05, x, p.aperture_z)
     back = _aperture(p, p.seat_y, .05, x)
     return cq.Workplane(obj=cq.Solid.makeLoft(
         [part.faces(">Y").wires().val() for part in (front, back)], ruled=True))
+
+
+def _paint_recess(p):
+    """A shallow, radiused paint guide across each brow, printable in one color."""
+    x = p.pd / 2
+    return (_xz(p.front_y + .75, x).moveTo(-4.0, 18.35)
+            .bezier([(4.2, 18.65), (13.5, 19.03), (20.7, 19.18)], includeCurrent=True)
+            .bezier([(22.5, 19.22), (24.0, 19.68), (25.36, 20.03)], includeCurrent=True)
+            .threePointArc((25.66, 20.41), (25.25, 20.77))
+            .bezier([(23.7, 20.75), (21.8, 20.68), (20.35, 20.60)], includeCurrent=True)
+            .bezier([(12.0, 19.93), (3.2, 19.32), (-4.04, 19.13)], includeCurrent=True)
+            .threePointArc((-4.42, 18.72), (-4.0, 18.35)).close().extrude(3.0))
+
+
+def engraving_skin(frame, mask, inward):
+    """Follow the real crown with a constant-depth cut along the tool axis."""
+    plug = frame.intersect(mask)
+    if not plug.Solids():
+        raise ValueError("Engraving misses the frame")
+    return plug.cut(plug.translate(inward))
 
 
 def _glass_cavity(p, x):
@@ -125,33 +142,16 @@ def _glass_cavity(p, x):
     width = p.glass_w + 2 * p.pocket_clearance
     height = p.glass_h + p.pane_stagger + 2 * p.pocket_clearance
     cavity = _rounded(width, height, .25, p.seat_y, depth, x, p.pane_stagger / 2)
-    # Reserve both sides for the 1 mm polarizer tab.
+    # The valve drawing specifies a minimum distance from the terminals to
+    # the edge tab, but leaves its location toward the opposite end open.
+    # Keep both upper corners as locating lands and relieve the full tab run.
+    tab_top = p.glass_h / 2 + p.pane_stagger - 15.0 + 1.6
+    tab_bottom = -p.glass_h / 2 - p.pocket_clearance
     for side in (-1, 1):
-        tab = _box(1.5, depth, 14, x + side * (width / 2 + .25),
-                   p.seat_y - depth / 2, .8)
+        tab = _box(1.5, depth, tab_top - tab_bottom, x + side * (width / 2 + .25),
+                   p.seat_y - depth / 2, (tab_top + tab_bottom) / 2)
         cavity = cavity.union(tab)
     return cavity
-
-
-def _bridge(p):
-    # A horizontal tangent at the apex and near-vertical shoulders blend
-    # the opening into the inner edges of the rims.
-    half = p.pd / 2 - p.glass_w / 2 + 5.0
-    band = curved_bridge_band(p, p.front_y, 2.65)
-    bounds = band.val().BoundingBox()
-    shoulder = [(2.55, 15.9), (6.9, 12.4), (10.1, 4.3),
-                (9.35, -7.3), (10.1, -15.6), (half, -16.5)]
-    profile = (_xz(bounds.ymax + .5).moveTo(0, 15.9)
-               .bezier(shoulder, includeCurrent=True)
-               .lineTo(half, 21.95).threePointArc((0, 21.57), (-half, 21.95))
-               .lineTo(-half, -16.5)
-               .bezier([(-x, z) for x, z in reversed(shoulder[:-1])] + [(0, 15.9)],
-                       includeCurrent=True))
-    bridge = profile.close().extrude(bounds.ylen + 1).intersect(band).val()
-    edge_bounds = [(edge, edge.BoundingBox()) for edge in bridge.Edges()]
-    nose_edges = [edge for edge, box in edge_bounds
-                  if box.xlen > 1 and box.zmin < 15.9 and -8 < box.zmax <= 16]
-    return cq.Workplane(obj=bridge.fillet(.5, nose_edges))
 
 
 def _receiver(p):
@@ -168,13 +168,13 @@ def _receiver(p):
 
 
 def cut_snap_channels(frame, p):
-    # Allow the tip to deflect inward by 0.60 mm during insertion.
+    # Provide clearance for 0.90 mm inward release travel at the hook.
     x = p.snap_x
     # Leave the inside open near the yawed seat. Only the outer catch carries
     # the load. The low rear entry also clears straight retainer withdrawal.
-    passage = _box(5.35, 3.7, 3.55, x - 1.925, -1.225, 11.1)
-    catch = _box(2.90, 1.99, 3.25, x - .05, -.675, 11.1)
-    entry = _box(6.0, 1.40, 10.4, x - 2.2, p.stop_y - .3, 10.9)
+    passage = _box(5.55, 3.7, 3.55, x - 1.825, -1.225, 11.1)
+    catch = _box(3.33, 2.44, 3.25, x + .115, -.60, 11.1)
+    entry = _box(6.2, 1.40, 10.4, x - 2.10, p.stop_y - .3, 10.9)
     cuts = (passage, catch, entry)
     return frame.cut(*(piece.translate(_snap_offset(p)).val() for piece in cuts),
                      *(piece.mirror("YZ").translate(_snap_offset(p, -1)).val()
@@ -187,9 +187,14 @@ def snap_features(params=None):
     x = p.snap_x
     beam = _rounded(p.latch_beam_width, 18.1, .32, p.stop_y,
                     p.latch_thickness, x, 3.8)
+    # A rounded land grows out of the free end, behind the fixed shoulder.
+    # Pinching the two outer lands releases the hooks without touching glass.
+    pad = _rounded(2.45, 5.6, .78, p.stop_y - p.latch_thickness + .18,
+                   .95, x + .46, 9.85).faces("<Y").edges().fillet(.22)
+    beam = beam.union(pad)
     # Coordinates are offsets from the beam centre in X and absolute in Y.
     ramp = [(-.65, p.stop_y - .08), (.65, p.stop_y - .08), (.65, -1.60),
-            (1.25, -1.48), (1.25, -.79), (.65, .38), (-.65, .38)]
+            (1.45, -1.48), (1.45, -.79), (.65, .38), (-.65, .38)]
     hook = (cq.Workplane("XY", origin=(x, 0, 9.85)).polyline(ramp)
             .close().extrude(2.5))
     return {"beam_right": beam.translate(_snap_offset(p)),
@@ -225,16 +230,14 @@ def _retainer(p):
     return retainer
 
 
-def build_slim_frame(params=None):
-    p = params or SlimFrameParams()
+def build_slim_frame(p, shell):
     if p.front_y - p.seat_y < 1.0:
-        raise ValueError("The front lens seat needs at least 1 mm of material")
-    rim = place_at_lens(_rim(p), p)
+        raise ValueError("Leave at least 1 mm between the front and lens-seat datums")
     retainer = _retainer(p)
     receiver = _receiver(p).translate(_snap_offset(p))
     seat = _rounded(38.1, 39.3, 3.3, p.stop_y + .12, 4, p.pd / 2, .75)
     receiver = receiver.cut(place_at_lens(seat, p))
-    body = rim.union(rim.mirror("YZ")).union(_bridge(p))
+    body = cq.Workplane(obj=shell)
     # The cuff runs into the temple while its inner edge adjoins the thin rim.
     body = body.union(receiver).union(receiver.mirror("YZ"))
     for side in (-1, 1):
@@ -243,13 +246,18 @@ def build_slim_frame(params=None):
         body = body.cut(place_at_lens(_front_flare(p, x), p, side))
         body = body.cut(place_at_lens(_glass_cavity(p, x), p, side))
         # Contact the lower edge of the raised front panel at two discrete stops.
+        foot_top = p.pane_stagger - p.glass_h / 2 - .20
+        foot_base = -p.glass_h / 2 - p.pocket_clearance - .55
         for dx in (-10, 10):
-            foot = _box(4.6, 1.4, 2.05, x + dx, 1.75, -17.825)
+            foot = _box(4.6, 1.4, foot_top - foot_base, x + dx, 1.75, (foot_top + foot_base) / 2)
             body = body.union(place_at_lens(foot, p, side))
         # Cable exits are open to the brow above the protected wire joints.
         exit_channel = _rounded(10.0, 5.1, .60, 1.45, 5.8, x, 20.2)
         body = body.cut(place_at_lens(exit_channel, p, side))
-    front = cut_snap_channels(body.val(), p)
+    mark = place_at_lens(_paint_recess(p), p).val()
+    theta = radians(p.wrap_degrees)
+    skin = engraving_skin(body.val(), mark, (-.30 * sin(theta), -.30 * cos(theta), 0))
+    front = cut_snap_channels(body.val().cut(skin, skin.mirror("YZ")), p)
     return {"slim_frame": cq.Workplane(obj=front), "shared_retainer": retainer}
 
 
@@ -258,6 +266,7 @@ def build_glass_references(params=None):
     parts = {}
     for side, name in ((-1, "left"), (1, "right")):
         x = side * p.pd / 2
+        parts[f"spacer_{name}"] = place_at_lens(lens_spacer(p, x), p, side)
         for layer, y, z in (("front", p.pane_y, p.pane_stagger), ("rear", -p.pane_y, 0)):
             glass = _box(p.glass_w, p.glass_thickness, p.glass_h, x, y, z)
             tab = _box(1.01, .5, 8, x + p.glass_w / 2 + .495, y, z)
@@ -273,7 +282,7 @@ def build_glass_references(params=None):
 
 def _foam(p, x):
     pad = _rounded(37.6, 38.8, 4.6, p.foam_y, p.foam_thickness, x, .75)
-    inside = _rounded(33.2, 29.6, 4.8, p.foam_y + .1, p.foam_thickness + .2, x, -.25)
+    inside = _rounded(33.2, 29.6, 4.8, p.foam_y + .1, p.foam_thickness + .2, x, p.aperture_z)
     relief = _box(10.5, p.foam_thickness + .2, 4.4,
                   x, p.foam_y - p.foam_thickness / 2, 20.0)
     return pad.cut(inside).cut(relief)
@@ -283,7 +292,7 @@ def _face_pad(p, x):
     # Preserve a 2.2 mm side web while stepping the inner edge away from the eye.
     y = p.foam_y - p.foam_thickness
     outside = _rounded(39.4, 40.4, 4.8, y, p.foam_thickness, x, .75)
-    inside = _rounded(35.0, 31.6, 5.4, y + .1, p.foam_thickness + .2, x, -.25)
+    inside = _rounded(35.0, 31.6, 5.4, y + .1, p.foam_thickness + .2, x, p.aperture_z)
     return outside.cut(inside)
 
 
@@ -295,6 +304,12 @@ def build_foam_reference(params=None):
             for layer, profile in enumerate(layers, 1)}
 
 
+def lens_spacer(p, x):
+    outer = _rounded(35.7, 33.8, 1.1, p.pane_gap / 2, p.pane_gap, x, p.pane_stagger / 2)
+    bore = _rounded(33.2, 29.6, 4.25, p.pane_gap / 2 + .05, p.pane_gap + .1, x, p.aperture_z)
+    return outer.cut(bore)
+
+
 def cut_templates(p):
     """Return flat outlines for the foam and optical separator stock."""
     x = p.pd / 2
@@ -304,8 +319,7 @@ def cut_templates(p):
     cheek = face.intersect(_box(26, 8, 8, x + 4, shim_y, -17.5))
     # Both staggered panes cover this outline. The inner hole clears the
     # optical bore, and the outer edge avoids both of the lower pane stops.
-    separator = _rounded(35.7, 33.8, 1.1, 0, p.pane_gap, x, .75)
-    separator = separator.cut(_rounded(33.2, 29.6, 4.25, .05, .6, x, -.25))
+    separator = lens_spacer(p, x)
     profiles = {
         "foam-template.svg": ("Base pads", (base,)),
         "foam-face-template.svg": ("Face pads", (face,)),
@@ -333,7 +347,7 @@ def design_metadata(params=None):
         "pocket_clearance_per_side": p.pocket_clearance,
         "pane_gap": p.pane_gap,
         "pane_stagger": p.pane_stagger,
-        "front_seat_thickness": p.front_y - p.seat_y,
+        "front_seat_datum_to_face_datum": p.front_y - p.seat_y,
         "front_pane_axial_clearance": p.seat_y - p.pane_y - p.glass_thickness / 2,
         "rear_pane_axial_clearance": -p.pane_y - p.glass_thickness / 2 - p.stop_y,
         "rigid_optical_depth": p.front_y - p.foam_y,

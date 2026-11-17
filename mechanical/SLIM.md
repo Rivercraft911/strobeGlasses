@@ -1,7 +1,9 @@
 # MK1 Slim
 
-The raised rivercraft lettering sits above the right lens. Print the frame
-and the shared snap-in lens retainer. The right arm holds the battery underneath the PCB.
+Print the frame and shared snap-in lens retainer in Formlabs Tough resin.
+For a Form 4-series printer, use Tough 2000 Resin V2. The raised rivercraft
+lettering sits above the right lens, and the battery sits underneath the PCB
+on the right arm. [Formlabs material and printer compatibility](https://formlabs.com/products/tough-2000-resin/)
 
 ## Print and assemble
 
@@ -9,13 +11,10 @@ and the shared snap-in lens retainer. The right arm holds the battery underneath
    These are cuts from the finished parts. Try two actual wired panels, a
    spacer and the latch in this single bay. Use the strap coupon for the elastic. Print the PCB post coupon in the same
    resin and orientation as the frame, then wash and post-cure both alike.
-2. For a Formlabs print, use a compatible Tough resin and tilt the frame with
-   the battery lead exit downhill. Put supports on the inside of the arms,
+2. Tilt the frame with the battery lead exit downhill. Put supports inside the arms,
    keeping the lens seats, brow, screw pilots and short wire passages clear.
    Flush the pilots and passages before post-curing. Check a loose wire
-   contact in the shoulder guide coupon. For PETG, the frame STL stands on two
-   lands under the lenses. Start with a 0.4 mm nozzle, 0.20 mm layers, four
-   walls, a 4 mm brim and removable supports under the arms and over the bays.
+   contact in the shoulder guide coupon.
 3. Cut and route the wires as described below before soldering the valves.
    Match each pair’s optical orientations.
    At each shortened front terminal, solder the pigtail and one jumper side by
@@ -126,17 +125,14 @@ printed rear bar. The same friction loop attaches each end without sewing.
 | 10 | [JST ASSHSSH28K305, 305 mm, 28 AWG, socket at each end](https://www.digikey.com/en/products/detail/jst-sales-america-inc/ASSHSSH28K305/6009453) |
 | 1 roll | [Airisoer 3/4″ black flat elastic, 12 yd](https://www.amazon.com/dp/B0CBYLZM5Q) |
 | 10 | [Strapworks PLH-SLD-034-WDM-BLK, 3/4″ wide-mouth sliders](https://www.strapworks.com/34-inch-plastic-slide-wide-mouth-black) |
-| 1 sheet | [USA Industrials ZUSA-PU-43, extra-soft open-cell polyurethane, adhesive back, 13 × 13 × 1/8″](https://www.digikey.com/en/products/detail/fix-supply/ZUSA-PU-43/17751031) |
+| 1 sheet | USA Sealing ZUSA-PU-43, extra-soft adhesive-backed foam, 13 × 13 × 1/8″. [Amazon](https://www.amazon.com/dp/B07Y5LJM39) · [DigiKey](https://www.digikey.com/en/products/detail/fix-supply/ZUSA-PU-43/17751031) |
 
 With the 1.0 mm PCB and specified washers, the screws extend 2.6–2.8 mm
 into the posts. The centered washers overlap the board notches and clear the
 nearest solder-mask openings by at least 0.67 mm. The STEP shows the screw
 core within the pilot. Check the thread hold in the cured post coupon.
 
-For the PETG insert version, use two [McMaster 94459A767 M2 inserts](https://www.mcmaster.com/94459A767/)
-and two [McMaster 92832A107 M2 × 4 machine screws](https://www.mcmaster.com/92832A107/)
-per pair, with the same washers. Heat-set the inserts flush before fitting
-the pack. Allow 3.5 m of elastic for five starting lengths.
+Allow 3.5 m of elastic for five starting lengths.
 
 ## CAD and print checks
 
@@ -194,8 +190,7 @@ and the wire passages with `python source/check_lens_fit.py build`. Its lens swe
 sweep adds 0.30 mm at each side and above and below. These are modeled
 print-error allowances. Try the single-eye coupon on your machine.
 
-The default builds the resin frame with thread-forming screws. Use
-`--insert-diameter 3.2` for PETG with heat-set inserts.
+The default builds the resin frame with pilots for the thread-forming screws.
 Pass `--foam-layers 1` to export the one-layer assembly.
 Use `--wrap-degrees 0` for the flat comparison. For a repository checkout,
 generate the populated board STEP from the project root with KiCad CLI.

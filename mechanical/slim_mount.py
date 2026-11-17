@@ -168,8 +168,9 @@ def design_data(mount_x=69.0,insert_diameter=None,insert_depth=4.0):
                                  'long_axis':'Z','clear_height':STRAP_SLOT_HEIGHT,'exit':'rearward'}
                            for side, sign in (('right', 1), ('left', -1))},
             'battery_retention':'Pocket walls capture the pouch under the PCB on its two existing screws',
-            'notes':['For resin, check the cured pilot with a #52 drill and hand-drive the thread-forming screw.',
-                     'PETG: heat-set McMaster 94459A767 flush in a 3.2 mm pilot; test the printed bore first.',
+            'notes':[('Check the cured resin pilot with a #52 drill and hand-drive the thread-forming screw.'
+                      if insert_diameter is None else
+                      'Heat-set the M2 insert flush in the PETG post after testing the printed bore.'),
                      'Both arms share the same mirrored outline. The battery pocket and PCB posts are on the right.',
                      'USB-C,SW1/SW2,D1,TP1/TP2/TP3 and SH connectors remain exposed.',
                      'Pilot fit and thread hold require a printer/material coupon before final fabrication.']}

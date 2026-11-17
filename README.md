@@ -8,11 +8,11 @@ Open-source strobe glasses for experimenting with visual reaction-time training.
 
 Two stacked LCD light valves per eye switch between light and dark at an adjustable
 rate, periodically interrupting vision. The goal is a small, USB-C rechargeable
-control board that fits into a 3D-printed glasses frame.
+control board that fits into a resin-printed glasses frame.
 
 The MK1 PCB uses an ATtiny402, with USB-C charging and an output for each eye.
 
-[KiCad project](strobeGlassesMK1/) · [Parts and assembly](hardware-library/BOM.md) · [Firmware](firmware/strobe_glasses/)
+[KiCad project](strobeGlassesMK1/) · [Electronic parts](hardware-library/BOM.md) · [Frame assembly](mechanical/SLIM.md) · [Firmware](firmware/strobe_glasses/)
 
 ![Voltage decay across one LCD valve after disabling the 5 V PSU output](assets/lcd-5v-psu-off.png)
 

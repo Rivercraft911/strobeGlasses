@@ -30,12 +30,14 @@ to pad 1. D1 pad 1 is the cathode.
 | ---: | --- | --- |
 | 4 | [Adafruit 3627 light valves](https://www.digikey.com/en/products/detail/adafruit-industries-llc/3627/8119807) | 1528-2516-ND |
 | 2 | [JST-SH 2-pin cable housings](https://www.digikey.com/en/products/detail/jst-sales-america-inc/SHR-02V-S-B/759866) | 455-1377-ND |
-| 4 | [JST-SH precrimped leads](https://www.digikey.com/en/products/detail/jst-sales-america-inc/ASSHSSH28K152/6009452) | 455-3076-ND |
+| 2 | [JST ASSHSSH28K305 double-ended 305 mm precrimped leads](https://www.digikey.com/en/products/detail/jst-sales-america-inc/ASSHSSH28K305/6009453) | 455-3077-ND |
 | 1 | [SparkFun protected 40 mAh LiPo with JST-SH](https://www.digikey.com/en/products/detail/sparkfun-electronics/25270/22606859) | 1568-25270-ND |
 
-Stack two valves per eye and wire them in parallel to J3 or J4. Each
-precrimped lead has a contact at both ends and can be cut in half if it
-reaches. For a protected pack with a JST-PH plug, make an adapter with one
+Wire each stacked pair in parallel. J3 drives the left eye and J4 the right.
+One 305 mm lead supplies one long and one short conductor. Use the middle
+offcut for the jumpers. [Frame and harness assembly](../mechanical/SLIM.md)
+
+For a protected pack with a JST-PH plug, make an adapter with one
 extra SH housing, two SH contacts and an [Adafruit 3814 PH pigtail](https://www.adafruit.com/product/3814).
 Check J2 polarity before plugging in. Pin 1 is positive and pin 2 is ground.
 

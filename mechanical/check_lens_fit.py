@@ -7,6 +7,9 @@ import sys
 import cadquery as cq
 
 from build_slim import as_shape, overlap
+from slim_harness import build_harness, plug_backs
+from slim_channel import CrownChannel
+from slim_mount import make_keepouts
 from slim_frame import (
     SlimFrameParams, _box, _snap_offset, build_foam_reference,
     build_glass_references, lens_spacer, place_at_lens, snap_features,
@@ -108,6 +111,64 @@ def clip_checks(frame, retainer, p):
         clear(frame, body.translate((0, -travel, 0)), f"carrier at {travel} mm")
 
 
+def harness_checks(frame, retainer, p, report):
+    wires, dimensions = build_harness(p)
+    terminals = build_glass_references(p)
+    plugs = plug_backs(p.temple_half_width)
+    foam = [as_shape(part) for part in build_foam_reference(p).values()]
+    for side, eye, header in ((-1, 'left', 'J3'), (1, 'right', 'J4')):
+        for pin in (1, 2):
+            lead = wires[f'wire_{header}_{eye}_{pin}']
+            loop = wires[f'jumper_{eye}_{pin}']
+            front = as_shape(terminals[f'terminal_{eye}_front_{pin}'])
+            rear = as_shape(terminals[f'terminal_{eye}_rear_{pin}'])
+            plug = plugs[f'plug_{header}_{eye}']
+            if max(lead.distance(front), lead.distance(plug), loop.distance(front), loop.distance(rear)) > .005:
+                raise ValueError(f'{eye} terminal {pin} does not connect to its plug and both panes')
+            # A box enclosing the whole jumper throughout the stack's rear approach.
+            # Work in lens coordinates so that yaw does not enlarge the box artificially.
+            flat = place_at_lens(loop, p, side, wrap_fraction=-1)
+            envelope = place_at_lens(swept_box(flat, 12, .12, .12), p, side)
+            clear(frame, envelope, f'{eye} jumper insertion')
+        neighbor = 'right' if eye == 'left' else 'left'
+        other_header = 'J4' if eye == 'left' else 'J3'
+        plug = plugs[f'plug_{header}_{eye}']
+        # Extract by the exposed ears, along +Y. The leads of that plug flex with it.
+        b = plug.BoundingBox()
+        pull = _box(b.xlen, b.ylen+4, b.zlen, b.center.x, b.center.y+2, b.center.z).val()
+        for name, other in wires.items():
+            if neighbor in name:
+                clear(pull, other, f'{header} withdrawal against {name}')
+        clear(pull, plugs[f'plug_{other_header}_{neighbor}'], f'{header} neighboring housing')
+        clear(pull, frame, f'{header} plug access')
+    harness = cq.Compound.makeCompound(list(wires.values()))
+    for travel in (0, .5, 1, 2, 4, 6, 8):
+        for part in [retainer, *foam]:
+            clear(part.translate((0,-travel,0)), harness, f'carrier or foam against wires at {travel} mm')
+    installed = cq.Compound.makeCompound([harness, *plugs.values()])
+    clear(installed, make_keepouts(p.temple_half_width)['USB_C_overmold'], 'USB cable insertion')
+    for site in report['mount']['pcb_screws']:
+        x, y, z = site['position']
+        driver = cq.Solid.makeCylinder(2.5, 12, cq.Vector(x+2.6, y, z), cq.Vector(1, 0, 0))
+        clear(installed, driver, '5 mm screwdriver approach')
+    for name, route in dimensions.items():
+        if name.startswith('wire_J2') and route['length_mm'] > report['mount']['battery_free_lead_min_mm']:
+            raise ValueError(f'{name} exceeds the shortest specified battery lead')
+    for shoulder in (False, True):
+        channel = CrownChannel(p, shoulder)
+        # Sweep a rigid 3.9-mm SSH socket with 0.10 mm allowance per side
+        # through the web on the bundle's centerline before housing assembly.
+        for dx in (-1.3, 0., 1.3):
+            x = channel.gate + dx
+            y, z, _ = channel.curve(x)
+            grade = channel.curve.derivative()(x)
+            tangent = cq.Vector(1, grade[0], grade[1]).normalized()
+            plane = cq.Plane(origin=(x,y,z-channel.depression(x)+1.08),
+                             xDir=(0,1,0),normal=tangent)
+            gauge = cq.Workplane(plane).rect(1.0,1.55).extrude(1.95,both=True).val()
+            clear(frame, gauge, 'SH contact through brow guide')
+
+
 def main(output):
     report = json.loads((output / "geometry.json").read_text())
     f, m = report["frame"], report["mount"]["parameters"]
@@ -118,7 +179,8 @@ def main(output):
     panel_checks(frame, p)
     clip_checks(frame, retainer, p)
     check_upper_lip(frame, p)
-    print("Panel, tab, sleeve, spacer, clip release and service-access checks passed.")
+    harness_checks(frame, retainer, p, report)
+    print("Panel, tab, sleeve, spacer, clip release and harness service checks passed.")
 
 
 if __name__ == "__main__":

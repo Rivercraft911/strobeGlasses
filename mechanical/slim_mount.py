@@ -2,7 +2,6 @@
 
 from dataclasses import dataclass, asdict
 from pathlib import Path
-from math import dist
 import cadquery as cq
 
 from slim_shell import continuous_shell
@@ -23,10 +22,9 @@ STRAP_EYE_DEPTH = 2.5
 @dataclass(frozen=True)
 class MountParams:
     mount_x: float=69.0
-    insert_diameter: float=3.8
+    insert_diameter: float=3.2
     insert_depth: float=4.0
-    insert_outer_diameter: float=3.6
-    insert_radial_wall: float=1.3
+    boss_diameter: float=6.4
     board_floor: float=6.6
     floor: float=1.6
 
@@ -74,7 +72,7 @@ def _battery_pocket(p):
 
 def _pcb_supports(p):
     carrier = _battery_pocket(p)
-    boss_radius = max(p.insert_outer_diameter, p.insert_diameter) / 2 + p.insert_radial_wall
+    boss_radius = max(p.boss_diameter / 2, p.insert_diameter / 2 + 1.3)
     for u, v in PCB_NOTCHES:
         post = _cylinder(u, v, 0, boss_radius, p.board_floor)
         # Spread the screw load into the arm. Both tapered feet lie beneath
@@ -89,22 +87,6 @@ def _pcb_supports(p):
                                     .35, cq.Vector(u, v, p.board_floor - .35))
         carrier = carrier.cut(pilot, lead_in)
     return carrier.clean()
-
-
-def battery_lead_points(mount_x=69.0):
-    """Leave the pouch forward, then go under the PCB edge into J2."""
-    return [(mount_x+3.35,-37.2,1.85), (mount_x+3.8,-36.5,1.85),
-            (mount_x+5.46,-36.1,-8.5), (mount_x+9.3,-40.875,-10.7)]
-
-
-def _wire_corridor(points,radius=1.25):
-    tube=None
-    for first,last in zip(points,points[1:]):
-        a,b=cq.Vector(first),cq.Vector(last);delta=b-a
-        segment=cq.Solid.makeCylinder(radius,delta.Length,a,delta.normalized())
-        segment=segment.fuse(cq.Solid.makeSphere(radius,a)).fuse(cq.Solid.makeSphere(radius,b))
-        tube=segment if tube is None else tube.fuse(segment)
-    return tube.clean()
 
 
 def make_shell(params):
@@ -133,26 +115,25 @@ def make_references(mount_x=69.0,pcb_path=None):
 
 def make_keepouts(mount_x=69.0):
     """SH plugs and a representative USB-C cable overmold at its mouth."""
-    return {'J2_plug_wire':place(_box(22.8,-10.7,7.6,4.7,5.85,3.4),mount_x),
-            'J3_plug_wire':place(_box(47.8,-5,7.6,6.2,4.8,3.4),mount_x),
-            'J4_plug_wire':place(_box(47.8,1.15,7.6,6.2,4.8,3.4),mount_x),
-            'USB_C_overmold':place(_box(-15,-6.23,4.7,21.5,12,8),mount_x),
-            'battery_lead_corridor':_wire_corridor(battery_lead_points(mount_x),0.9)}
+    return {'J2_plug_wire':place(_box(22.4,-10.7,7.6,5.45,5.85,3.4),mount_x),
+            'J3_plug_wire':place(_box(47.8,-5.35,7.6,6.2,5.5,3.4),mount_x),
+            'J4_plug_wire':place(_box(47.8,.80,7.6,6.2,5.5,3.4),mount_x),
+            'USB_C_overmold':place(_box(-15,-6.23,4.7,21.5,12,8),mount_x)}
 
 
-def design_data(mount_x=69.0,insert_diameter=3.8,insert_depth=4.0):
+def design_data(mount_x=69.0,insert_diameter=3.2,insert_depth=4.0):
     p=MountParams(mount_x,insert_diameter,insert_depth)
-    route=battery_lead_points(mount_x)
     return {'parameters':asdict(p),
             'pcb_screws':[{'axis':'X','position':(mount_x+6.6,u-66,v)} for u,v in PCB_NOTCHES],
             'board_bottom_x':mount_x+p.board_floor,'battery_max_mm':BATTERY_SIZE,
             'battery_pocket_inner_mm':tuple(size + 2 * POCKET_CLEARANCE for size in BATTERY_SIZE[:2]),
             'battery_pocket_rim_gap_mm':POCKET_RIM_GAP,
             'battery_to_pcb_mm':p.board_floor - p.floor - BATTERY_SIZE[2],
-            'battery_free_lead_min_mm':18.5,'battery_lead_points':route,
-            'battery_lead_route_polyline_mm':sum(dist(a,b) for a,b in zip(route,route[1:])),
-            'hardware':'2x M2x4 pan-head screw, head≤5mm;2x M2x3 insert(OD3.6);optional0.3–0.5mm nylon washers,OD≤5mm',
-            'thread_engagement_with_washer_mm':(2.5,2.7),
+            'battery_free_lead_min_mm':18.5,
+            'hardware':{'insert': 'McMaster 94459A767, M2 x 3.2; Ø3.2 PETG heat-set pilot or measured slip fit for bonded resin',
+                        'screw': 'McMaster 92832A107, M2 x 4 button head',
+                        'washer': 'McMaster 93475A195, 2.2 ID x 5 OD x 0.2–0.4'},
+            'thread_engagement_with_washer_mm':(2.6,2.8),
             'fit_temple_width_mm':2 * (mount_x - TEMPLE_CLEARANCE_PER_SIDE),
             'arm_inside_span_mm':2 * mount_x,
             'strap_anchor_outside_span_mm':2 * (mount_x + STRAP_EYE_DEPTH),
@@ -163,8 +144,8 @@ def design_data(mount_x=69.0,insert_diameter=3.8,insert_depth=4.0):
                                  'long_axis':'Z','clear_height':STRAP_SLOT_HEIGHT,'exit':'rearward'}
                            for side, sign in (('right', 1), ('left', -1))},
             'battery_retention':'Pocket walls capture the pouch under the PCB on its two existing screws',
-            'notes':['Black resin default: bond3.6mm OD M2x3 inserts into3.8x4mm pockets; hold tops flush during cure. Never heat-install into cured resin.',
-                     'PETG option: insert_diameter=3.2 for heat-setting the same insert; print a fit coupon first.',
+            'notes':['For cured resin, measure the knurls and verify a slip fit with adhesive clearance on the coupon before bonding.',
+                     'PETG: heat-set McMaster 94459A767 flush in a 3.2 mm pilot; test the printed bore first.',
                      'Both arms share the same mirrored outline. The battery pocket and insert posts are on the right.',
                      'USB-C,SW1/SW2,D1,TP1/TP2/TP3 and SH connectors remain exposed.',
                      'Slot and pilot fit require a printer/material coupon before final fabrication.']}

@@ -12,6 +12,8 @@ from slim_frame import (
     build_slim_frame, build_snap_coupon, curved_bridge_band,
     cut_templates, design_metadata, engraving_skin,
 )
+from slim_channel import CrownChannel, brow_accent, channel_frame
+from slim_harness import WIRE_OD, build_harness, plug_backs
 from slim_mount import (
     TEMPLE_CLEARANCE_PER_SIDE, design_data, insert_coupon, make_keepouts, make_shell, pcb_supports,
     make_references, make_strap_references, pcb_location, strap_coupon,
@@ -28,6 +30,12 @@ COLORS = {
     "battery": (0.58, 0.60, 0.67),
     "liner": (0.08, 0.10, 0.11),
     "elastic": (0.04, 0.05, 0.05),
+    "left_lead": (.95, .42, .05),
+    "right_lead": (.12, .65, .82),
+    "pack_lead": (.58, .24, .35),
+    "accent": (.76, .10, .065),
+    "plug": (.83, .82, .76),
+    "brass": (.64, .46, .21),
     "hardware": (0.12, 0.12, 0.12),
 }
 
@@ -50,6 +58,8 @@ def overlap(a, b):
 
 
 def material(name):
+    if name == "optional_brow_accent":
+        return "accent"
     if name == "shared_retainer":
         return "retainer"
     if name.startswith("lcd_"):
@@ -60,6 +70,12 @@ def material(name):
         return "liner"
     if "elastic" in name:
         return "elastic"
+    if name.startswith("wire_") or name.startswith("jumper_"):
+        return "left_lead" if "left" in name else "right_lead" if "right" in name else "pack_lead"
+    if name.startswith("plug_"):
+        return "plug"
+    if name.startswith("insert_"):
+        return "brass"
     if name.startswith("pcb_screw"):
         return "hardware"
     if name in COLORS:
@@ -118,10 +134,28 @@ def board_fasteners(mount):
             cq.Solid.makeCylinder(1.1, .3, washer_origin, axis)
         )
         head_origin = cq.Vector(x + 1.3, y, z)
-        head = cq.Solid.makeCylinder(1.9, 1.55, head_origin, axis)
+        head = cq.Solid.makeCylinder(1.75, 1.30, head_origin, axis)
         shank = cq.Solid.makeCylinder(1.0, 4, head_origin - axis * 4, axis)
         hardware[f"pcb_screw_{index}"] = cq.Compound.makeCompound([head.fuse(shank), washer])
+        # Represent only the installed core. Knurls displace the pilot wall;
+        # the catalog specifies the pilot diameter, not the knurl major diameter.
+        insert_length = 3.2
+        outer = min(mount["parameters"]["insert_diameter"], 3.2)
+        origin = cq.Vector(x-insert_length, y, z)
+        hardware[f"insert_{index}"] = cq.Solid.makeCylinder(outer/2, insert_length, origin, axis).cut(
+            cq.Solid.makeCylinder(1.0, insert_length, origin, axis))
     return hardware
+
+
+def export_guide_coupon(frame, params, output):
+    channel = CrownChannel(params, True)
+    x = channel.gate
+    y, z, _ = channel.curve(x)
+    crop = cq.Workplane('XY').box(11, 18, 8).translate((x, y, z-1.3)).val()
+    sample = frame.intersect(crop)
+    if not sample.isValid() or len(sample.Solids()) != 1:
+        raise ValueError("Invalid wire guide coupon")
+    export_mesh(on_print_bed(sample, 0), output / 'wire-guide-coupon.stl')
 
 
 def export_stencil(outlines, label, output):
@@ -151,7 +185,7 @@ def build(params, mount_x, pcb_step, output, insert_diameter, insert_depth):
     print_dir.mkdir(parents=True, exist_ok=True)
     preview_dir.mkdir(exist_ok=True)
 
-    optics = build_slim_frame(params, make_shell(params))
+    optics = build_slim_frame(params, channel_frame(make_shell(params), params))
     printable = {name: as_shape(shape) for name, shape in optics.items()}
     frame = printable["slim_frame"].fuse(pcb_supports(mount_x, insert_diameter, insert_depth)).clean()
     printable["slim_frame"] = engrave_wordmark(frame, params)
@@ -163,10 +197,18 @@ def build(params, mount_x, pcb_step, output, insert_diameter, insert_depth):
     }
     mount = design_data(mount_x, insert_diameter, insert_depth)
     elastic = make_strap_references(mount_x)
+    harness, wire_data = build_harness(params)
     refs = (
         build_glass_references(params) | make_references(mount_x, pcb_path=pcb_step)
-        | foam | elastic | board_fasteners(mount)
+        | foam | elastic | board_fasteners(mount) | plug_backs(mount_x) | harness
     )
+    accent = brow_accent(printable["slim_frame"], params)
+    if len(accent.Solids()) != 1:
+        raise ValueError("Expected one printable brow accent")
+    optional = output / "optional"
+    optional.mkdir(exist_ok=True)
+    export_mesh(on_print_bed(accent, 180), optional / "brow_accent.stl")
+    refs["optional_brow_accent"] = accent
     parts = printable | {name: as_shape(shape) for name, shape in refs.items()}
     assembly = cq.Assembly(name="Strobe Glasses MK1 Slim")
     manifest = []
@@ -187,7 +229,8 @@ def build(params, mount_x, pcb_step, output, insert_diameter, insert_depth):
             "name": name,
             "mesh": str(preview.relative_to(output)),
             "surface": surface,
-            "printable": name in printable,
+            "printable": name in printable or name == "optional_brow_accent",
+            "optional": name == "optional_brow_accent",
             "size_mm": [round(v, 2) for v in (b.xlen, b.ylen, b.zlen)],
             "volume_mm3": round(shape.Volume(tol=1e-6), 2),
         })
@@ -202,18 +245,23 @@ def build(params, mount_x, pcb_step, output, insert_diameter, insert_depth):
             volume = overlap(as_shape(envelope), solid)
             if volume > .01:
                 collisions[f"{name} / {part}"] = round(volume, 3)
-    step_file = output / "mk1-slim.step"
-    assembly.export(str(step_file))
-    imported = cq.importers.importStep(str(step_file)).val()
     expected_solids = sum(len(shape.Solids()) for shape in parts.values())
-    if len(imported.Solids()) != expected_solids or not imported.isValid():
-        raise ValueError(f"{step_file.name} did not round trip as {expected_solids} valid solids")
+    for file_name in ("mk1-slim.step", "mk1-bare.step"):
+        if file_name == "mk1-bare.step":
+            assembly.remove("optional_brow_accent")
+            expected_solids -= 1
+        step_file = output / file_name
+        assembly.export(str(step_file))
+        imported = cq.importers.importStep(str(step_file)).val()
+        if len(imported.Solids()) != expected_solids or not imported.isValid():
+            raise ValueError(f"{file_name} did not round trip as {expected_solids} valid solids")
     report = {
         "parts": manifest,
         "overlaps_mm3": collisions,
         "frame": design_metadata(params),
         "engraving": {"text": "rivercraft", "depth_mm": 0.38},
         "mount": mount,
+        "harness": {"insulated_diameter_mm": WIRE_OD, "conductors": wire_data},
         "pcb_datum_mm": pcb_location(mount_x).toTuple()[0],
     }
     (output / "geometry.json").write_text(json.dumps(report, indent=2) + "\n")
@@ -237,9 +285,10 @@ def build(params, mount_x, pcb_step, output, insert_diameter, insert_depth):
     if not insert_sample.isValid() or len(insert_sample.Solids()) != 1:
         raise ValueError("Invalid insert coupon")
     export_mesh(on_print_bed(insert_sample, 0), output / "insert-coupon.stl")
+    export_guide_coupon(printable["slim_frame"], params, output)
     if collisions:
         raise ValueError(f"Interferences: {collisions}")
-    print(f"Saved {len(printable)} print parts and the assembly to {output}")
+    print(f"Saved {len(printable)} required prints, the optional brow accent and the assembly to {output}")
 
 
 def main():
@@ -248,7 +297,7 @@ def main():
     parser.add_argument("--temple-width", type=float, default=126)
     parser.add_argument("--foam-layers", type=int, choices=(1, 2), default=2)
     parser.add_argument("--wrap-degrees", type=float, choices=(0, 20), default=20)
-    parser.add_argument("--insert-diameter", type=float, default=3.8)
+    parser.add_argument("--insert-diameter", type=float, default=3.2)
     parser.add_argument("--insert-depth", type=float, default=4.0)
     parser.add_argument("--pcb-step", type=Path, default=HERE / "build/reference/mk1-pcb.step")
     parser.add_argument("--output", type=Path, default=HERE / "build/mk1-sculpted")

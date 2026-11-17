@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 410" width="840" height="410" role="img" aria-labelledby="title desc">
+  <title id="title">How to thread the glasses strap</title>
+  <desc id="desc">Side sections of the webbing. At the right temple, loop one end around the rear bar and stitch the folded end to the strap. At the left temple, weave through the slider, turn around the frame bar and retrace both slider slots. The orange line is the returning length of the same elastic.</desc>
+  <style>
+    text {font-family: Arial, sans-serif; fill: #1a272b}
+    .title {font-size: 22px; font-weight: bold}
+    .label {font-size: 15px}
+    .slide, .bar {fill: #80898a; stroke: #465456; stroke-width: 1.8}
+    .go, .back {stroke: #24393f; stroke-width: 8; fill: none; stroke-linejoin: round; stroke-linecap: round}
+    .back {stroke: #ba521c}
+    .leader {stroke: #647174; stroke-width: 1.2; fill: none}
+  </style>
+  <rect width="840" height="410" fill="#f9f8f4"/>
+  <text x="28" y="36" class="title">Right temple · sewn end</text>
+  <rect class="bar" x="584" y="72" width="25" height="32" rx="8"/>
+  <path class="go" d="M90 108 H596 Q619 108 619 88"/>
+  <path class="back" d="M619 88 Q619 67 596 67 Q566 67 541 78 Q510 93 470 96 H310"/>
+  <path d="M343 90 l4 23 m4 -23 l4 23 m4 -23 l4 23 M380 90 l4 23 m4 -23 l4 23 m4 -23 l4 23" fill="none" stroke="#1d282b" stroke-width="2"/>
+  <path class="leader" d="M365 121 v12 M610 87 h32"/>
+  <text x="291" y="155" class="label">Stitch the 25 mm fold</text>
+  <text x="652" y="92" class="label">Rear frame bar</text>
+  <path d="M28 176 H812" stroke="#d0d5d1"/>
+  <text x="28" y="210" class="title">Left temple · adjustable end</text>
+  <text x="345" y="245" class="label">Three-bar slider</text>
+  <path class="leader" d="M398 250 v10"/>
+  <rect class="slide" x="262" y="283" width="24" height="22" rx="7"/>
+  <rect class="slide" x="384" y="283" width="28" height="22" rx="7"/>
+  <rect class="slide" x="510" y="283" width="24" height="22" rx="7"/>
+  <rect class="bar" x="660" y="274" width="30" height="33" rx="8"/>
+  <path class="go" d="M65 327 H270 C313 327 321 276 371 276 H422 C469 276 475 329 517 329 H675 Q703 329 703 292"/>
+  <path class="back" d="M703 292 Q703 264 676 264 C625 264 618 317 554 317 H517 C475 317 469 264 422 264 H370 C310 264 308 315 267 315 H133"/>
+  <path fill="#24393f" d="m186 320 13 7 -13 7z"/>
+  <path fill="#ba521c" d="m190 308 -13 7 13 7z"/>
+  <text x="48" y="359" class="label">To back of head</text>
+  <text x="180" y="293" class="label">Free tail</text>
+  <path class="leader" d="m205 297 -14 10 M682 335 v7"/>
+  <text x="622" y="359" class="label">Rear frame bar</text>
+  <path class="back" d="M30 387 h21"/>
+  <text x="64" y="392" class="label">Return path of the same band</text>
+</svg>

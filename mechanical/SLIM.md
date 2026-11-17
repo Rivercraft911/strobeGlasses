@@ -1,7 +1,7 @@
 # MK1 Slim
 
-Two flat lens bays meet at a smooth, engraved brow. Print the frame and the
-shared snap-in lens retainer. The right arm holds the battery underneath the PCB.
+The raised rivercraft lettering sits above the right lens. Print the frame
+and the shared snap-in lens retainer. The right arm holds the battery underneath the PCB.
 
 ## Print and assemble
 
@@ -95,15 +95,23 @@ Try the strips provisionally and check normal head movements before bonding.
 The 126 mm temple measurement sets the fit target, and the straight inner
 arms are 138 mm apart. The strap bars span about 143 mm on the outside.
 
-Use 3/4″ flat elastic in the 20.8 × 4.2 mm slots. Thread one end through,
-fold a 25 mm return back, and bar-tack it to itself. On the other end,
-run the elastic through a matching wide-mouth slider, through the second
-printed slot once, and back through the slider. Start with about 650 mm of
-elastic and leave a 50 mm adjustment tail while fitting. Try the doubled
-elastic through the coupon and slider before cutting the other straps.
-Keep the stitched fold outside the slot and clear of the USB-C plug.
-Set light strap tension and use the pads to fill local gaps. Check for
-even contact without pressure on the brow or nose.
+Cut 650 mm of 3/4″ (19 mm) black flat elastic for the first pair.
+The upright slots at the ends of the printed arms measure 20.8 × 4.2 mm.
+
+1. **Right arm, PCB side.** Pass one end through the slot from the head side to
+   the outside. Fold 25 mm back around the rear bar toward the band and sew the
+   two layers together with two short rows of zigzag stitches. Keep the stitched
+   overlap behind the arm so the USB port stays clear.
+2. **Left arm, adjustable end.** Run the free end up through the first opening
+   of the three-bar slider, over its center bar and down through the second.
+   Pass the end through the left frame slot and fold it back around the rear bar.
+   Retrace both slider openings in reverse, keeping the elastic flat. Leave a
+   50 mm tail and slide the adjuster to fit.
+3. Try the strap on with light tension. Give it a tug to check the slider grips
+   before trimming the tail or cutting the other four bands. The strap coupon
+   lets you check the thickness of the elastic before printing a full frame.
+
+![Strap threading, showing the sewn fold and the return through the adjuster](strap-threading.svg)
 
 ## Small parts for five pairs
 

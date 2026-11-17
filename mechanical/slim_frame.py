@@ -117,14 +117,6 @@ def _front_flare(p, x):
         [part.faces(">Y").wires().val() for part in (front, back)], ruled=True))
 
 
-def engraving_skin(frame, mask, inward):
-    """Follow the real crown with a constant-depth cut along the tool axis."""
-    plug = frame.intersect(mask)
-    if not plug.Solids():
-        raise ValueError("Engraving misses the frame")
-    return plug.cut(plug.translate(inward))
-
-
 def _glass_cavity(p, x):
     depth = p.seat_y - p.stop_y + .10
     width = p.glass_w + 2 * p.pocket_clearance

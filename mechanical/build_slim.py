@@ -9,8 +9,8 @@ import cadquery as cq
 
 from slim_frame import (
     SlimFrameParams, build_foam_reference, build_glass_references,
-    build_slim_frame, build_snap_coupon, curved_bridge_band,
-    cut_templates, design_metadata, engraving_skin,
+    build_slim_frame, build_snap_coupon, place_at_lens,
+    cut_templates, design_metadata,
 )
 from slim_channel import CrownChannel, channel_frame
 from slim_harness import WIRE_OD, build_harness, plug_backs
@@ -108,17 +108,22 @@ def export_lens_coupon(frame, retainer, p, output):
         export_mesh(on_print_bed(sample, angle), folder / f"{name}.stl")
 
 
-def engrave_wordmark(frame, params):
-    """Cut the lowercase wordmark into the center brow, facing forward."""
-    bounds = curved_bridge_band(params, params.front_y + .01, 1.8).val().BoundingBox()
-    plane = cq.Plane(origin=(0, bounds.ymax + .1, 18.2),
-                     xDir=(-1, 0, 0), normal=(0, 1, 0))
-    letters = cq.Workplane(plane).text("rivercraft", 3.7, -bounds.ylen - .2, font="Arial",
+def emboss_wordmark(frame, p):
+    """Raise the letters on the outward face of the right lens rim."""
+    # The front of this bay is planar. The side of the bridge rolls away
+    # quickly enough to obscure lettering when viewed at a shallow angle.
+    top = p.front_y + .30
+    plane = cq.Plane(origin=(p.pd / 2, top, 18.6), xDir=(-1, 0, 0), normal=(0, 1, 0))
+    letters = cq.Workplane(plane).text("rivercraft", 5.0, -1.0, font="Arial",
                                       kind="bold", combine=False).solids().vals()
-    if len(letters) < len("rivercraft"):
-        raise ValueError("Incomplete rivercraft engraving")
-    stamps = [engraving_skin(frame, letter, (0, -.38, 0)) for letter in letters]
-    return frame.cut(*stamps).clean()
+    # The full footprint of every stroke must seat on the rim, including the
+    # dot on the i. The check uses the same glyph outlines as the final STL.
+    root_plane = cq.Workplane(plane).workplane(offset=-.95).rect(35, 7).extrude(.05).val()
+    for letter in letters:
+        root = place_at_lens(letter.intersect(root_plane), p)
+        if not root.Solids() or root.cut(frame).Volume() > 1e-5:
+            raise ValueError("Wordmark extends beyond the brow face")
+    return frame.fuse(*[place_at_lens(letter, p) for letter in letters]).clean()
 
 
 def board_fasteners(mount):
@@ -196,7 +201,7 @@ def build(params, mount_x, pcb_step, output, insert_diameter, insert_depth):
     optics = build_slim_frame(params, channel_frame(make_shell(params), params))
     printable = {name: as_shape(shape) for name, shape in optics.items()}
     frame = fit_pcb_mount(printable["slim_frame"], mount_x, insert_diameter, insert_depth)
-    printable["slim_frame"] = engrave_wordmark(frame, params)
+    printable["slim_frame"] = emboss_wordmark(frame, params)
     # The stiff arm roots taper through the soft gasket's outside corners.
     # Trim the foam model to those roots, as with the hand-cut foam blank.
     foam = {
@@ -255,7 +260,8 @@ def build(params, mount_x, pcb_step, output, insert_diameter, insert_depth):
         "parts": manifest,
         "overlaps_mm3": collisions,
         "frame": design_metadata(params),
-        "engraving": {"text": "rivercraft", "depth_mm": 0.38},
+        "wordmark": {"text": "rivercraft", "location": "front of right lens rim",
+                     "height_above_lens_face_datum_mm": 0.30},
         "mount": mount,
         "harness": {"insulated_diameter_mm": WIRE_OD, "conductors": wire_data},
         "pcb_datum_mm": pcb_location(mount_x).toTuple()[0],

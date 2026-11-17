@@ -79,11 +79,15 @@ and close the board only when the plug seats without tension. J2 pin 1 is batter
 
 Print both foam templates at 100% and check their 20 mm rulers. Cut the
 base pads from `foam-template.svg` and the face pads from
-`foam-face-template.svg`, using 1/8″ black adhesive-backed neoprene for
-both. The notched base pads go on the retainer with the notches up. Start
-the unpowered fit check with both layers. The wider opening in the face
-pad leaves room around the lids and bridges the base pad's wire notch.
-Keep wires flush in their channels and trim the pad locally if needed.
+`foam-face-template.svg` using ZUSA-PU-43, an extra-soft, adhesive-backed
+open-cell polyurethane. The sheet is 1/8″ thick and takes 0.9 psi to compress
+by 25%. One 13″ square sheet fits five sets of both templates.
+[Foam specifications](https://www.fixsupply.com/zusa-pu-43-black-polyurethane-foam-sheet-with-acrylic-adhesive-2-lbs-cu-ft-1-8-thick-x-13-wide-x-13-long)
+
+Stick each notched base pad to the retainer with the notch up. Stick the
+wider-opening face pad on top, with bare foam toward the skin. The two layers
+give 6.35 mm of cushion before compression. Keep the wires flush in their
+channels and trim the pad locally if needed. Try the first pair unpowered.
 
 With the strap lightly tensioned, blink normally and look up and down.
 Check lash clearance and that the foam lands evenly around the brow and
@@ -122,7 +126,7 @@ printed rear bar. The same friction loop attaches each end without sewing.
 | 10 | [JST ASSHSSH28K305, 305 mm, 28 AWG, socket at each end](https://www.digikey.com/en/products/detail/jst-sales-america-inc/ASSHSSH28K305/6009453) |
 | 1 roll | [Airisoer 3/4″ black flat elastic, 12 yd](https://www.amazon.com/dp/B0CBYLZM5Q) |
 | 10 | [Strapworks PLH-SLD-034-WDM-BLK, 3/4″ wide-mouth sliders](https://www.strapworks.com/34-inch-plastic-slide-wide-mouth-black) |
-| 1 pack | [Storystore FSSA01, 1/8″ adhesive neoprene, five 12 × 8″ sheets](https://www.amazon.com/dp/B08P1XQMQH) |
+| 1 sheet | [USA Industrials ZUSA-PU-43, extra-soft open-cell polyurethane, adhesive back, 13 × 13 × 1/8″](https://www.digikey.com/en/products/detail/fix-supply/ZUSA-PU-43/17751031) |
 
 With the 1.0 mm PCB and specified washers, the screws extend 2.6–2.8 mm
 into the posts. The centered washers overlap the board notches and clear the
@@ -145,10 +149,10 @@ the pack. Allow 3.5 m of elastic for five starting lengths.
   The retainer plate is 1.05 mm thick, with 1.25 mm at the snap beams.
   One foam layer brings local depth to 10.43 mm and two to 13.60 mm before
   compression.
-- At 35% foam compression, the contact plane sits 3.46 mm behind the rear
-  glass with one layer and 5.53 mm behind it with two. The wearer’s cornea
-  and lashes sit at a different depth from that plane. Check actual fit
-  with the glasses unpowered.
+- With both layers, the modeled distance from the rear glass to the face
+  of the foam is 7.75 mm unloaded, 5.53 mm at 35% compression and 4.58 mm
+  at 50%. Actual squeeze depends on the wearer and strap tension. Blink
+  and look up and down to check lash clearance on the first pair.
 - The 34.4 × 31.2 mm front bevel tapers to the 32 × 28.3 mm optical bore.
   The snap channel opens inward at its entry. The 1.30 mm wide spring
   beam has 0.30 mm nominal lateral clearance in the straight guide.

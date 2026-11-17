@@ -95,23 +95,22 @@ Try the strips provisionally and check normal head movements before bonding.
 The 126 mm temple measurement sets the fit target, and the straight inner
 arms are 138 mm apart. The strap bars span about 143 mm on the outside.
 
-Cut 650 mm of 3/4″ (19 mm) black flat elastic for the first pair.
-The upright slots at the ends of the printed arms measure 20.8 × 4.2 mm.
+Start with 700 mm of 3/4″ (19 mm) flat black elastic and two matching
+wide-mouth three-bar sliders. Each temple has a 20.8 × 4.2 mm slot and a
+printed rear bar. The same friction loop attaches each end without sewing.
 
-1. **Right arm, PCB side.** Pass one end through the slot from the head side to
-   the outside. Fold 25 mm back around the rear bar toward the band and sew the
-   two layers together with two short rows of zigzag stitches. Keep the stitched
-   overlap behind the arm so the USB port stays clear.
-2. **Left arm, adjustable end.** Run the free end up through the first opening
-   of the three-bar slider, over its center bar and down through the second.
-   Pass the end through the left frame slot and fold it back around the rear bar.
-   Retrace both slider openings in reverse, keeping the elastic flat. Leave a
-   50 mm tail and slide the adjuster to fit.
-3. Try the strap on with light tension. Give it a tug to check the slider grips
-   before trimming the tail or cutting the other four bands. The strap coupon
-   lets you check the thickness of the elastic before printing a full frame.
+1. At one end, weave the elastic up through one slider opening, over the center
+   bar and down through the other. Feed that end through the frame slot and
+   fold it back around the rear bar toward the back of your head.
+2. Take the tail back through the same slider, tracing both openings in reverse.
+   Leave about 50 mm beyond the slider. Repeat at the other temple with the
+   second slider, keeping the band flat.
+3. Adjust both sides with the strap slack. Position the sliders on the band
+   behind the temples so the USB port stays accessible. Tug each end and check
+   for slipping in the first strap coupon before cutting the other four bands.
+   Cut the final length after fitting.
 
-![Strap threading, showing the sewn fold and the return through the adjuster](strap-threading.svg)
+![No-sew strap routing at either temple](strap-threading.svg)
 
 ## Small parts for five pairs
 
@@ -122,7 +121,7 @@ The upright slots at the ends of the printed arms measure 20.8 × 4.2 mm.
 | 10 | [JST SHR-02V-S-B two-pin housings for J3 and J4](https://www.digikey.com/en/products/detail/jst-sales-america-inc/SHR-02V-S-B/759866) |
 | 10 | [JST ASSHSSH28K305, 305 mm, 28 AWG, socket at each end](https://www.digikey.com/en/products/detail/jst-sales-america-inc/ASSHSSH28K305/6009453) |
 | 1 roll | [Airisoer 3/4″ black flat elastic, 12 yd](https://www.amazon.com/dp/B0CBYLZM5Q) |
-| 5 | [Strapworks PLH-SLD-034-WDM-BLK, 3/4″ wide-mouth sliders](https://www.strapworks.com/34-inch-plastic-slide-wide-mouth-black) |
+| 10 | [Strapworks PLH-SLD-034-WDM-BLK, 3/4″ wide-mouth sliders](https://www.strapworks.com/34-inch-plastic-slide-wide-mouth-black) |
 | 1 pack | [Storystore FSSA01, 1/8″ adhesive neoprene, five 12 × 8″ sheets](https://www.amazon.com/dp/B08P1XQMQH) |
 
 With the 1.0 mm PCB and specified washers, the screws extend 2.6–2.8 mm
@@ -133,7 +132,7 @@ core within the pilot. Check the thread hold in the cured post coupon.
 For the PETG insert version, use two [McMaster 94459A767 M2 inserts](https://www.mcmaster.com/94459A767/)
 and two [McMaster 92832A107 M2 × 4 machine screws](https://www.mcmaster.com/92832A107/)
 per pair, with the same washers. Heat-set the inserts flush before fitting
-the pack. Buy 3.25 m of elastic if buying by length.
+the pack. Allow 3.5 m of elastic for five starting lengths.
 
 ## CAD and print checks
 

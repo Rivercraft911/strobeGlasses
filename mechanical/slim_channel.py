@@ -194,7 +194,9 @@ class CrownChannel:
             y, z, fade = self.curve(x)
             w = self.half + 0.30 * (1 - fade)
             dip = self.depression(x)
-            lip = 0.06 + 0.97 * fade + (0.58 if self.shoulder else 0.24) * dip / self.drop
+            # The visible crown rolls down into the openings. Keep the roof
+            # over the crimp passage independent of the lower cable bed.
+            lip = 0.04 + 0.80 * fade + (0.66 if self.shoulder else 0.24) * dip / self.drop
             scale = 0.16 + 0.84 * fade
             rim = w * scale
 
@@ -265,55 +267,3 @@ def channel_frame(frame, p):
         shell, tool = CrownChannel(p, shoulder).shapes()
         frame = frame.fuse(shell).cut(tool).clean()
     return frame
-
-
-def brow_accent(frame, p):
-    """Optional single center-brow cover. Its two adhesive lands follow the rails."""
-    channel = CrownChannel(p, False)
-    sections = []
-    stations = np.linspace(-21.4, 21.4, 23)
-    for x in stations:
-        y, z, _ = channel.curve(x)
-        t = np.clip((21.4 - abs(x)) / 3, 0, 1)
-        ease = t * t * (3 - 2 * t)
-        w = 1.06 + 1.39 * ease
-        crown = 0.24 * channel.depression(x) / channel.drop
-        top = 2.54 + crown
-        underside = 1.32 + crown
-        land = underside - 0.69 * ease
-
-        def pt(offset, h):
-            return (x, y + offset, z + h)
-
-        sections.append(
-            [
-                [pt(-w * 0.64, underside), pt(w * 0.64, underside)],
-                [
-                    pt(w * 0.64, underside),
-                    pt(w * 0.74, underside),
-                    pt(w * 0.76, land),
-                    pt(w - 0.28, land),
-                ],
-                [pt(w - 0.28, land), pt(w - 0.10, land), pt(w, land + 0.13), pt(w, land + 0.32)],
-                [pt(w, land + 0.32), pt(w, top - 0.34)],
-                [pt(w, top - 0.34), pt(w, top - 0.13), pt(w - 0.15, top), pt(w - 0.38, top)],
-                [pt(w - 0.38, top), pt(-w + 0.38, top)],
-                [pt(-w + 0.38, top), pt(-w + 0.15, top), pt(-w, top - 0.13), pt(-w, top - 0.34)],
-                [pt(-w, top - 0.34), pt(-w, land + 0.32)],
-                [
-                    pt(-w, land + 0.32),
-                    pt(-w, land + 0.13),
-                    pt(-w + 0.10, land),
-                    pt(-w + 0.28, land),
-                ],
-                [
-                    pt(-w + 0.28, land),
-                    pt(-w * 0.76, land),
-                    pt(-w * 0.74, underside),
-                    pt(-w * 0.64, underside),
-                ],
-            ]
-        )
-    # The offset leaves 0.15 mm at the contoured adhesive lands; the
-    # permanently relieved center stays clear of both insulated wires.
-    return swept_profile(stations, sections).cut(frame.translate((0, 0, 0.15))).clean()

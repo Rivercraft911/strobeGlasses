@@ -97,7 +97,7 @@ def build_harness(p):
             # side by side. The jumper stays low while the pigtail turns up.
             start = lens_point(p, side, offset + 0.53, p.pane_y - p.terminal_length, front_z)
             turn = lens_point(p, side, offset + 0.53, p.pane_y - p.terminal_length - 2.15, front_z)
-            lift = (turn[0], turn[1], brow_z(p, turn[0]) + 1.32)
+            lift = (turn[0], turn[1], brow_z(p, turn[0]) + 0.56)
             points = [start, turn, lift]
             col = pin - 1
             row = 1 if side < 0 else 0

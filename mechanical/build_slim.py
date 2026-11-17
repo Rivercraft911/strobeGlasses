@@ -12,10 +12,11 @@ from slim_frame import (
     build_slim_frame, build_snap_coupon, curved_bridge_band,
     cut_templates, design_metadata, engraving_skin,
 )
-from slim_channel import CrownChannel, brow_accent, channel_frame
+from slim_channel import CrownChannel, channel_frame
 from slim_harness import WIRE_OD, build_harness, plug_backs
 from slim_mount import (
-    TEMPLE_CLEARANCE_PER_SIDE, design_data, insert_coupon, make_keepouts, make_shell, pcb_supports,
+    TEMPLE_CLEARANCE_PER_SIDE, MountParams, design_data, mount_coupon,
+    make_keepouts, make_shell, fit_pcb_mount,
     make_references, make_strap_references, pcb_location, strap_coupon,
 )
 
@@ -33,7 +34,6 @@ COLORS = {
     "left_lead": (.95, .42, .05),
     "right_lead": (.12, .65, .82),
     "pack_lead": (.58, .24, .35),
-    "accent": (.76, .10, .065),
     "plug": (.83, .82, .76),
     "brass": (.64, .46, .21),
     "hardware": (0.12, 0.12, 0.12),
@@ -58,8 +58,6 @@ def overlap(a, b):
 
 
 def material(name):
-    if name == "optional_brow_accent":
-        return "accent"
     if name == "shared_retainer":
         return "retainer"
     if name.startswith("lcd_"):
@@ -127,6 +125,7 @@ def board_fasteners(mount):
     """M2x4 screws and 0.3 mm washers fitted to the actual PCB notches."""
     hardware = {}
     axis = cq.Vector(1, 0, 0)
+    p = MountParams(**mount["parameters"])
     for index, site in enumerate(mount["pcb_screws"], 1):
         x, y, z = site["position"]
         washer_origin = cq.Vector(x + 1, y, z)
@@ -134,9 +133,18 @@ def board_fasteners(mount):
             cq.Solid.makeCylinder(1.1, .3, washer_origin, axis)
         )
         head_origin = cq.Vector(x + 1.3, y, z)
-        head = cq.Solid.makeCylinder(1.75, 1.30, head_origin, axis)
-        shank = cq.Solid.makeCylinder(1.0, 4, head_origin - axis * 4, axis)
+        head_radius, head_height = (1.675, 1.60) if p.insert_diameter is None else (1.75, 1.30)
+        head = cq.Solid.makeCylinder(head_radius, head_height, head_origin, axis)
+        # Threads form during installation. Show the engaged section by a core
+        # inside the pilot, and the full screw diameter through board and washer.
+        if p.insert_diameter is None:
+            core = cq.Solid.makeCylinder(.77, 2.7, head_origin - axis * 4, axis)
+            shank = core.fuse(cq.Solid.makeCylinder(1.0, 1.3, cq.Vector(x,y,z), axis))
+        else:
+            shank = cq.Solid.makeCylinder(1.0, 4, head_origin - axis * 4, axis)
         hardware[f"pcb_screw_{index}"] = cq.Compound.makeCompound([head.fuse(shank), washer])
+        if p.insert_diameter is None:
+            continue
         # Represent only the installed core. Knurls displace the pilot wall;
         # the catalog specifies the pilot diameter, not the knurl major diameter.
         insert_length = 3.2
@@ -187,7 +195,7 @@ def build(params, mount_x, pcb_step, output, insert_diameter, insert_depth):
 
     optics = build_slim_frame(params, channel_frame(make_shell(params), params))
     printable = {name: as_shape(shape) for name, shape in optics.items()}
-    frame = printable["slim_frame"].fuse(pcb_supports(mount_x, insert_diameter, insert_depth)).clean()
+    frame = fit_pcb_mount(printable["slim_frame"], mount_x, insert_diameter, insert_depth)
     printable["slim_frame"] = engrave_wordmark(frame, params)
     # The stiff arm roots taper through the soft gasket's outside corners.
     # Trim the foam model to those roots, as with the hand-cut foam blank.
@@ -202,13 +210,6 @@ def build(params, mount_x, pcb_step, output, insert_diameter, insert_depth):
         build_glass_references(params) | make_references(mount_x, pcb_path=pcb_step)
         | foam | elastic | board_fasteners(mount) | plug_backs(mount_x) | harness
     )
-    accent = brow_accent(printable["slim_frame"], params)
-    if len(accent.Solids()) != 1:
-        raise ValueError("Expected one printable brow accent")
-    optional = output / "optional"
-    optional.mkdir(exist_ok=True)
-    export_mesh(on_print_bed(accent, 180), optional / "brow_accent.stl")
-    refs["optional_brow_accent"] = accent
     parts = printable | {name: as_shape(shape) for name, shape in refs.items()}
     assembly = cq.Assembly(name="Strobe Glasses MK1 Slim")
     manifest = []
@@ -229,8 +230,7 @@ def build(params, mount_x, pcb_step, output, insert_diameter, insert_depth):
             "name": name,
             "mesh": str(preview.relative_to(output)),
             "surface": surface,
-            "printable": name in printable or name == "optional_brow_accent",
-            "optional": name == "optional_brow_accent",
+            "printable": name in printable,
             "size_mm": [round(v, 2) for v in (b.xlen, b.ylen, b.zlen)],
             "volume_mm3": round(shape.Volume(tol=1e-6), 2),
         })
@@ -246,15 +246,11 @@ def build(params, mount_x, pcb_step, output, insert_diameter, insert_depth):
             if volume > .01:
                 collisions[f"{name} / {part}"] = round(volume, 3)
     expected_solids = sum(len(shape.Solids()) for shape in parts.values())
-    for file_name in ("mk1-slim.step", "mk1-bare.step"):
-        if file_name == "mk1-bare.step":
-            assembly.remove("optional_brow_accent")
-            expected_solids -= 1
-        step_file = output / file_name
-        assembly.export(str(step_file))
-        imported = cq.importers.importStep(str(step_file)).val()
-        if len(imported.Solids()) != expected_solids or not imported.isValid():
-            raise ValueError(f"{file_name} did not round trip as {expected_solids} valid solids")
+    step_file = output / "mk1-bare.step"
+    assembly.export(str(step_file))
+    imported = cq.importers.importStep(str(step_file)).val()
+    if len(imported.Solids()) != expected_solids or not imported.isValid():
+        raise ValueError(f"{step_file.name} did not round trip as {expected_solids} valid solids")
     report = {
         "parts": manifest,
         "overlaps_mm3": collisions,
@@ -281,14 +277,14 @@ def build(params, mount_x, pcb_step, output, insert_diameter, insert_depth):
     if not eye_sample.isValid() or len(eye_sample.Solids()) != 1:
         raise ValueError("Invalid strap coupon")
     export_mesh(on_print_bed(eye_sample, 0), strap_dir / "strap_anchor_coupon.stl")
-    insert_sample = insert_coupon(printable["slim_frame"], mount_x)
-    if not insert_sample.isValid() or len(insert_sample.Solids()) != 1:
-        raise ValueError("Invalid insert coupon")
-    export_mesh(on_print_bed(insert_sample, 0), output / "insert-coupon.stl")
+    post_sample = mount_coupon(printable["slim_frame"], mount_x)
+    if not post_sample.isValid() or len(post_sample.Solids()) != 1:
+        raise ValueError("Invalid PCB post coupon")
+    export_mesh(on_print_bed(post_sample, 0), output / ("pcb-post-coupon.stl" if insert_diameter is None else "insert-coupon.stl"))
     export_guide_coupon(printable["slim_frame"], params, output)
     if collisions:
         raise ValueError(f"Interferences: {collisions}")
-    print(f"Saved {len(printable)} required prints, the optional brow accent and the assembly to {output}")
+    print(f"Saved {len(printable)} print parts and the bare assembly to {output}")
 
 
 def main():
@@ -297,10 +293,10 @@ def main():
     parser.add_argument("--temple-width", type=float, default=126)
     parser.add_argument("--foam-layers", type=int, choices=(1, 2), default=2)
     parser.add_argument("--wrap-degrees", type=float, choices=(0, 20), default=20)
-    parser.add_argument("--insert-diameter", type=float, default=3.2)
+    parser.add_argument("--insert-diameter", type=float, help="Use heat-set posts for PETG instead of the thread-forming screws in resin")
     parser.add_argument("--insert-depth", type=float, default=4.0)
     parser.add_argument("--pcb-step", type=Path, default=HERE / "build/reference/mk1-pcb.step")
-    parser.add_argument("--output", type=Path, default=HERE / "build/mk1-sculpted")
+    parser.add_argument("--output", type=Path, default=HERE / "build/mk1-bare-resin")
     args = parser.parse_args()
     if not args.pcb_step.is_file():
         parser.error(f"Missing the populated PCB STEP at {args.pcb_step}")

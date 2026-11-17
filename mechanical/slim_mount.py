@@ -19,14 +19,24 @@ STRAP_SLOT_THROAT = 4.2
 STRAP_SLOT_CENTER = 1.3
 STRAP_EYE_DEPTH = 2.5
 
+# McMaster 96817A204 forms its threads in a #52 pilot (0.0635 inches).
+RESIN_PILOT_DIAMETER = .0635 * 25.4
+RESIN_PILOT_DEPTH = 4.6
+
 @dataclass(frozen=True)
 class MountParams:
     mount_x: float=69.0
-    insert_diameter: float=3.2
+    insert_diameter: float | None=None
     insert_depth: float=4.0
     boss_diameter: float=6.4
     board_floor: float=6.6
     floor: float=1.6
+
+    @property
+    def pilot(self):
+        if self.insert_diameter is None:
+            return RESIN_PILOT_DIAMETER, RESIN_PILOT_DEPTH
+        return self.insert_diameter, self.insert_depth
 
 
 def _box(u,v,w,du,dv,dw):
@@ -72,19 +82,18 @@ def _battery_pocket(p):
 
 def _pcb_supports(p):
     carrier = _battery_pocket(p)
-    boss_radius = max(p.boss_diameter / 2, p.insert_diameter / 2 + 1.3)
+    diameter, depth = p.pilot
+    boss_radius = max(p.boss_diameter / 2, diameter / 2 + 1.3)
     for u, v in PCB_NOTCHES:
         post = _cylinder(u, v, 0, boss_radius, p.board_floor)
         # Spread the screw load into the arm. Both tapered feet lie beneath
         # the board and clear the pouch, its lead exit and the terminal plugs.
         foot = cq.Solid.makeCone(boss_radius + .85, boss_radius, 2.75, cq.Vector(u, v, .25))
         carrier = carrier.fuse(post, foot)
-    # Blind insert pilots with a short lead-in through every unioned support.
     for u,v in PCB_NOTCHES:
-        pilot = _cylinder(u, v, p.board_floor - p.insert_depth,
-                          p.insert_diameter / 2, p.insert_depth + .2)
-        lead_in = cq.Solid.makeCone(p.insert_diameter / 2, p.insert_diameter / 2 + .22,
-                                    .35, cq.Vector(u, v, p.board_floor - .35))
+        pilot = _cylinder(u, v, p.board_floor - depth, diameter/2, depth + .2)
+        lead_in = cq.Solid.makeCone(diameter/2, diameter/2 + .22, .25,
+                                    cq.Vector(u, v, p.board_floor - .25))
         carrier = carrier.cut(pilot, lead_in)
     return carrier.clean()
 
@@ -95,6 +104,17 @@ def make_shell(params):
 
 def pcb_supports(mount_x, insert_diameter, insert_depth):
     return place(_pcb_supports(MountParams(mount_x, insert_diameter, insert_depth)), mount_x)
+
+
+def fit_pcb_mount(frame, mount_x, insert_diameter, insert_depth):
+    p = MountParams(mount_x, insert_diameter, insert_depth)
+    frame = frame.fuse(pcb_supports(mount_x, insert_diameter, insert_depth))
+    # Trim the swept arm and both post feet back to the pocket floor. Leave the
+    # same clearance during insertion that the seated pouch has at its edges.
+    length, width, _ = BATTERY_SIZE
+    cavity = _roundrect(*BATTERY_CENTER, p.floor, length + 2 * POCKET_CLEARANCE,
+                        width + 2 * POCKET_CLEARANCE, p.board_floor + 10, .22)
+    return frame.cut(place(cavity, mount_x)).clean()
 
 
 def make_references(mount_x=69.0,pcb_path=None):
@@ -121,7 +141,7 @@ def make_keepouts(mount_x=69.0):
             'USB_C_overmold':place(_box(-15,-6.23,4.7,21.5,12,8),mount_x)}
 
 
-def design_data(mount_x=69.0,insert_diameter=3.2,insert_depth=4.0):
+def design_data(mount_x=69.0,insert_diameter=None,insert_depth=4.0):
     p=MountParams(mount_x,insert_diameter,insert_depth)
     return {'parameters':asdict(p),
             'pcb_screws':[{'axis':'X','position':(mount_x+6.6,u-66,v)} for u,v in PCB_NOTCHES],
@@ -130,10 +150,14 @@ def design_data(mount_x=69.0,insert_diameter=3.2,insert_depth=4.0):
             'battery_pocket_rim_gap_mm':POCKET_RIM_GAP,
             'battery_to_pcb_mm':p.board_floor - p.floor - BATTERY_SIZE[2],
             'battery_free_lead_min_mm':18.5,
-            'hardware':{'insert': 'McMaster 94459A767, M2 x 3.2; Ø3.2 PETG heat-set pilot or measured slip fit for bonded resin',
-                        'screw': 'McMaster 92832A107, M2 x 4 button head',
+            'hardware':{**({'insert': 'McMaster 94459A767, M2 x 3.2 heat-set'}
+                           if insert_diameter is not None else {}),
+                        'screw': ('McMaster 96817A204, 2 x 4 mm thread-forming for plastic'
+                                  if insert_diameter is None else 'McMaster 92832A107, M2 x 4 button head'),
                         'washer': 'McMaster 93475A195, 2.2 ID x 5 OD x 0.2–0.4'},
-            'thread_engagement_with_washer_mm':(2.6,2.8),
+            'screw_penetration_with_washer_mm':(2.6, 2.8),
+            'pilot_diameter_depth_mm':p.pilot,
+            'post_thread':'Formed in resin by 96817A204' if insert_diameter is None else 'M2 heat-set insert',
             'fit_temple_width_mm':2 * (mount_x - TEMPLE_CLEARANCE_PER_SIDE),
             'arm_inside_span_mm':2 * mount_x,
             'strap_anchor_outside_span_mm':2 * (mount_x + STRAP_EYE_DEPTH),
@@ -144,11 +168,11 @@ def design_data(mount_x=69.0,insert_diameter=3.2,insert_depth=4.0):
                                  'long_axis':'Z','clear_height':STRAP_SLOT_HEIGHT,'exit':'rearward'}
                            for side, sign in (('right', 1), ('left', -1))},
             'battery_retention':'Pocket walls capture the pouch under the PCB on its two existing screws',
-            'notes':['For cured resin, measure the knurls and verify a slip fit with adhesive clearance on the coupon before bonding.',
+            'notes':['For resin, check the cured pilot with a #52 drill and hand-drive the thread-forming screw.',
                      'PETG: heat-set McMaster 94459A767 flush in a 3.2 mm pilot; test the printed bore first.',
-                     'Both arms share the same mirrored outline. The battery pocket and insert posts are on the right.',
+                     'Both arms share the same mirrored outline. The battery pocket and PCB posts are on the right.',
                      'USB-C,SW1/SW2,D1,TP1/TP2/TP3 and SH connectors remain exposed.',
-                     'Slot and pilot fit require a printer/material coupon before final fabrication.']}
+                     'Pilot fit and thread hold require a printer/material coupon before final fabrication.']}
 
 
 def make_strap_references(mount_x=69.0, thickness=1.8, width=STRAP_MAX_WIDTH):
@@ -169,8 +193,8 @@ def strap_coupon(frame, mount_x):
     return frame.intersect(clip)
 
 
-def insert_coupon(frame, mount_x):
-    """Crop the rear PCB post with its floor and insertion lead-in."""
+def mount_coupon(frame, mount_x):
+    """Crop a complete PCB post from the finished frame for a screw-fit trial."""
     u, v = PCB_NOTCHES[0]
-    clip = place(_box(u - 4, v - 3.5, -.05, 10, 6.85, 7), mount_x)
+    clip = place(_box(u - 4.5, v - 4.6, -.05, 10, 9.2, 7), mount_x)
     return frame.intersect(clip)

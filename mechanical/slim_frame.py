@@ -117,18 +117,6 @@ def _front_flare(p, x):
         [part.faces(">Y").wires().val() for part in (front, back)], ruled=True))
 
 
-def _paint_recess(p):
-    """A shallow, radiused paint guide across each brow, printable in one color."""
-    x = p.pd / 2
-    return (_xz(p.front_y + .75, x).moveTo(-4.0, 18.35)
-            .bezier([(4.2, 18.65), (13.5, 19.03), (20.7, 19.18)], includeCurrent=True)
-            .bezier([(22.5, 19.22), (24.0, 19.68), (25.36, 20.03)], includeCurrent=True)
-            .threePointArc((25.66, 20.41), (25.25, 20.77))
-            .bezier([(23.7, 20.75), (21.8, 20.68), (20.35, 20.60)], includeCurrent=True)
-            .bezier([(12.0, 19.93), (3.2, 19.32), (-4.04, 19.13)], includeCurrent=True)
-            .threePointArc((-4.42, 18.72), (-4.0, 18.35)).close().extrude(3.0))
-
-
 def engraving_skin(frame, mask, inward):
     """Follow the real crown with a constant-depth cut along the tool axis."""
     plug = frame.intersect(mask)
@@ -254,10 +242,7 @@ def build_slim_frame(p, shell):
         # Cable exits are open to the brow above the protected wire joints.
         exit_channel = _rounded(10.0, 5.1, .60, 1.45, 5.8, x, 20.2)
         body = body.cut(place_at_lens(exit_channel, p, side))
-    mark = place_at_lens(_paint_recess(p), p).val()
-    theta = radians(p.wrap_degrees)
-    skin = engraving_skin(body.val(), mark, (-.30 * sin(theta), -.30 * cos(theta), 0))
-    front = cut_snap_channels(body.val().cut(skin, skin.mirror("YZ")), p)
+    front = cut_snap_channels(body.val(), p)
     return {"slim_frame": cq.Workplane(obj=front), "shared_retainer": retainer}
 
 

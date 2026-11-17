@@ -169,18 +169,56 @@ def harness_checks(frame, retainer, p, report):
             clear(frame, gauge, 'SH contact through brow guide')
 
 
+def battery_checks(parts, mount):
+    frame, pcb, pack = (parts[k] for k in ('slim_frame', 'pcb', 'battery'))
+    box = pack.BoundingBox()
+    # Allow straight insertion from outside the arm with the PCB removed.
+    entry = _box(box.xlen + 10, box.ylen, box.zlen, box.center.x + 5,
+                 box.center.y, box.center.z).val()
+    clear(frame, entry, 'battery loading with board removed')
+    headroom = mount['battery_to_pcb_mm']
+    if abs(pack.distance(pcb) - headroom) > .02:
+        raise ValueError('Battery-to-board clearance disagrees with the export')
+    for dy in (-.20, .20):
+        for dz in (-.20, .20):
+            lifted = pack.translate((headroom + .10, dy, dz))
+            if overlap(pcb, lifted) < 1:
+                raise ValueError('Battery can lift past the PCB')
+    for dx in (0, headroom):
+        for dy, dz in ((.55, 0), (-.55, 0), (0, .55), (0, -.55)):
+            if overlap(frame, pack.translate((dx, dy, dz))) < .1:
+                raise ValueError('Pocket does not retain the battery in-plane')
+    # Use full diameter and maximum penetration with the thinnest washer.
+    for site in mount['pcb_screws']:
+        x,y,z = site['position']
+        screw = cq.Solid.makeCylinder(1, 4, cq.Vector(x-2.8,y,z), cq.Vector(1,0,0))
+        if screw.distance(pack) < 1:
+            raise ValueError('Screw enters the battery clearance envelope')
+        if mount['parameters']['insert_diameter'] is None:
+            diameter, depth = mount['pilot_diameter_depth_mm']
+            pilot = cq.Solid.makeCylinder(diameter/2-.005, depth-.01,
+                                          cq.Vector(x-depth+.005,y,z), cq.Vector(1,0,0))
+            clear(frame, pilot, 'resin screw pilot through the finished frame')
+            floor = cq.Solid.makeCylinder(.5, 1, cq.Vector(x-depth-1,y,z), cq.Vector(1,0,0))
+            if overlap(floor, frame) < floor.Volume() - .003:
+                raise ValueError('Resin screw pilot breaks through the back of its post')
+
+
 def main(output):
     report = json.loads((output / "geometry.json").read_text())
     f, m = report["frame"], report["mount"]["parameters"]
     p = SlimFrameParams(pd=f["pd"], temple_half_width=m["mount_x"],
                         wrap_degrees=f["lens_wrap_degrees_per_side"], foam_layers=f["foam_layers"])
-    assembly = cq.importers.importStep(str(output / "mk1-slim.step")).val()
-    frame, retainer = assembly.Solids()[:2]
+    step = output / "mk1-bare.step"
+    assembly = cq.Assembly.load(str(step if step.exists() else output / "mk1-slim.step"))
+    parts = {name.rsplit('/', 1)[-1]: shape.moved(loc) for shape, name, loc, color in assembly}
+    frame, retainer = parts['slim_frame'], parts['shared_retainer']
+    battery_checks(parts, report['mount'])
     panel_checks(frame, p)
     clip_checks(frame, retainer, p)
     check_upper_lip(frame, p)
     harness_checks(frame, retainer, p, report)
-    print("Panel, tab, sleeve, spacer, clip release and harness service checks passed.")
+    print("Battery retention, PCB post, lens insertion, clip release and harness service checks passed.")
 
 
 if __name__ == "__main__":

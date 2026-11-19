@@ -5,6 +5,8 @@ from itertools import combinations
 from pathlib import Path
 
 import cadquery as cq
+import numpy as np
+from scipy.interpolate import CubicSpline
 from vtkmodules.vtkFiltersCore import vtkFeatureEdges, vtkPolyDataConnectivityFilter
 from vtkmodules.vtkIOGeometry import vtkSTLReader
 
@@ -30,7 +32,7 @@ POST_TOP = 21.8
 SCREW_X = 52.65
 HEAD_SEAT = POST_TOP + 1.5
 COLLAR_R = 1.85
-PIN_HEIGHT = 15.5  # Open-ended pin gauge; extension beyond the frame is unrestricted.
+PIN_HEIGHT = 4.5  # Trimmed terminal shown in the assembled harness, measured from the glass.
 
 
 def box(w, d, bottom, top, x=0, y=0):
@@ -276,21 +278,62 @@ def glass_references(p):
     return refs
 
 
+def pigtail_path(points):
+    """Interpolate the installed wire through its guides, entering the crimp axially."""
+    points = np.asarray(points)
+    lengths = np.linalg.norm(np.diff(points, axis=0), axis=1)
+    stations = np.r_[0, np.cumsum(lengths)]
+    start_tangent = (points[1] - points[0]) / lengths[0]
+    curve = CubicSpline(stations, points, bc_type=((1, start_tangent), (1, (0, -1, 0))))
+    tangents = curve(stations, 1)
+
+    # A cubic span has an exact Bézier representation with these two handles.
+    spans = []
+    for i, length in enumerate(lengths):
+        start, end = points[i : i + 2]
+        controls = (
+            start,
+            start + tangents[i] * length / 3,
+            end - tangents[i + 1] * length / 3,
+            end,
+        )
+        spans.append(cq.Edge.makeBezier([cq.Vector(*point) for point in controls]))
+    return cq.Wire.assembleEdges(spans)
+
+
 def routed_leads(p):
     bridge, shoulder = CrownChannel(p, False), CrownChannel(p, True)
     wires = {}
+    top = FLOOR + p.glass_h + PIN_HEIGHT
     for side, eye, header_z in ((-1, "left", -2.6), (1, "right", 3.55)):
         for pin, dx in enumerate((-2.54, 2.54), 1):
-            top = FLOOR + p.glass_h + PIN_HEIGHT
             x, y, z = lens_point(p, side, dx, PANE_Y, top)
-            lane = 4.10 + (pin - 1) * 1.35
-            front = front_y(p, x) - lane
-            crown = brow_z(p, x) + 1.0
-            # The free insulated lead bends over toward the fixed ridge. The
-            # metal terminal stays vertical; the keeper lifts behind this loop.
-            start = [(x, y, z), (x, y, z + 2.0), (x, front, z + 2.0), (x, front, crown)]
-            route = start + brow_to_header(p, side, pin, header_z, bridge, shoulder)
-            wires[f"wire_{eye}_{pin}"] = tube(rounded_path(route, 2.4)[0])
+            route = brow_to_header(p, side, pin, header_z, bridge, shoulder)
+            # Lift over the lip at the shoulder exit, then fan into two separate plugs.
+            route = [
+                (a, b, h + 0.16 if shoulder.x[-3] <= a <= shoulder.x[-1] else h)
+                for a, b, h in route
+            ]
+            if side < 0 and pin == 2:
+                a, b, h = route[-3]
+                route[-3] = (a - 0.85, b, h)
+            px, py, pz = route[-1]
+            turn_x, turn_y, _ = route[-2]
+            lane = pin - 1
+            route[-2:] = [
+                (turn_x - 1.0 + 0.65 * lane, turn_y + 1.1 * lane, pz + 0.2 * lane),
+                (px, py + 3.0, pz),
+                (px, py, pz),
+            ]
+
+            # The long lead on the far pane dips under the cover at the bridge entrance.
+            entry_x, entry_y, entry_z = route[0]
+            bend_z = min(z - 0.12, entry_z + 0.03)
+            if side < 0 and pin == 1:
+                bend_z -= 0.65
+            joint = (x, y, z - 0.55)
+            bend = (x + 0.42 * (entry_x - x), y + 0.35 * (entry_y - y), bend_z)
+            wires[f"wire_{eye}_{pin}"] = tube(pigtail_path([joint, bend, *route]))
     return wires
 
 
@@ -473,8 +516,13 @@ def export_parts(output, p, frame, cap, pcb_step=None):
     ):
         assembly.add(part, name=name, color=cq.Color(*color))
         print_mesh(part, output / f"{name}.stl")
+    finishes = {
+        "valve": (0.20, 0.32, 0.30),
+        "wire": (0.08, 0.08, 0.09),
+        "lead": (0.72, 0.73, 0.74),
+    }
     for name, part in refs.items():
-        color = (0.20, 0.32, 0.30) if name.startswith("valve_") else (0.55, 0.51, 0.42)
+        color = finishes.get(name.partition("_")[0], (0.55, 0.51, 0.42))
         assembly.add(part, name=name, color=cq.Color(*color))
     assembly.export(str(output / "top_load.step"))
 

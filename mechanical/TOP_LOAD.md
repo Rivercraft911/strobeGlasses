@@ -2,9 +2,9 @@
 
 Open the [MK1 assembly STEP](strobe-glasses-mk1.step) to edit the frame and brow cover as separate solids. To print a pair, download one [frame STL](frame.stl) and one [brow cover STL](brow-cover.stl). The files use millimeters.
 
-One Adafruit 3627 slides down into each rim. A narrow plate follows the top edge and catches the glass at its four corners. Two screws enter the rim from above, 81.6 mm apart. Print the frame and plate together as a matched set.
+One Adafruit 3627 slides down into each rim. A narrow plate follows the top edge and catches the glass at its four corners. Two screws enter the rim from above, 81.6 mm apart. You can reuse the previous MK1 frame with that spacing. Print the revised frame for the rounded four-wire guide.
 
-![Installed top plate and a close-up of a screw seated in the brow](top-load-brow.png)
+![Two close-ups of the swept brow, showing the recessed screw and the four wires passing through the rounded shoulder guide](top-load-brow.png)
 
 ## Fit and assemble
 

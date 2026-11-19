@@ -1,7 +1,7 @@
 # MK1 firmware
 
 Power on with both lenses clear. Tap to resume the last preset. The first boot
-uses Light. Both eyes strobe together.
+uses Light with both eyes together.
 
 | State | Tap | Hold for 0.8 s |
 | --- | --- | --- |
@@ -9,6 +9,16 @@ uses Light. Both eyes strobe together.
 | Strobing | Cycle Light → Balanced → Heavy → Custom | Clear both lenses |
 | Editing FPS | Step to the next rate | Move to duty |
 | Editing duty | Step to the next dark percentage | Save to Custom and resume |
+
+**Double-tap while strobing** to switch between together and alternating.
+Start the second press within 0.3 s of releasing the first. A single tap
+advances the preset after that window. The eye pattern is saved separately
+and applies to every preset and its edit preview.
+
+In alternating mode each eye keeps the selected FPS and dark percentage. The
+right eye starts half a frame after the left. At 5 fps and 50% dark, the left
+eye darkens for 100 ms, then the right for 100 ms. Below 50% there are gaps
+with both eyes clear. Above 50% the dark windows overlap.
 
 Light is 6 fps at 40% dark, Balanced is 5 fps at 50%, and Heavy is 4 fps at
 60%. Custom starts at 5 fps and 50%. FPS steps through 2, 4, 5, 6, 8, 10, 15,
@@ -55,8 +65,10 @@ arduino-cli compile --fqbn megaTinyCore:megaavr:atxy2:chip=402,clock=5internal,b
    TP3. On a fresh chip, tap SW2 twice to reach Balanced.
 3. Expect a 200 ms frame on Balanced. For 100 ms the differential waveform
    alternates between about +3.3 V and −3.3 V every 5 ms. Both pins then
-   stay low for 100 ms. Check J4 the same way. Hold SW2 for 0.8 s and
-   confirm both connectors return to 0 V differential.
+   stay low for 100 ms. Check J4 the same way. To compare eye timing, probe
+   J3 pin 1 and J4 pin 1 together, with both grounds on TP3. Double-tap
+   SW2. The bursts should now start 100 ms apart on Balanced. Double-tap
+   again for simultaneous bursts. Hold for 0.8 s to clear both eyes.
 4. Power down, connect one two-valve stack, then repower at 3.3 V. Repeat
    with both stacks. Compare the loaded waveform with the unloaded result
    and check that the stacked valves darken and clear together.

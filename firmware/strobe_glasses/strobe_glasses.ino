@@ -13,9 +13,7 @@
 #endif
 
 // MK1: PA0 stays dedicated to UPDI. The charge LED has no MCU connection.
-constexpr uint8_t PositivePins = PIN1_bm | PIN6_bm;
-constexpr uint8_t NegativePins = PIN2_bm | PIN7_bm;
-constexpr uint8_t LensPins = PositivePins | NegativePins;
+constexpr uint8_t LensPins = PIN1_bm | PIN2_bm | PIN6_bm | PIN7_bm;
 constexpr uint8_t ButtonPin = PIN3_bm;
 
 constexpr uint8_t Rates[] = {2, 4, 5, 6, 8, 10, 15, 20};
@@ -23,6 +21,7 @@ constexpr uint8_t DutySteps = 7;  // 20% through 80%, in 10-point steps
 constexpr uint8_t Custom = 3;
 constexpr uint16_t HoldMs = 800;
 constexpr uint8_t DebounceMs = 25;
+constexpr uint16_t DoubleTapMs = 300;
 constexpr uint16_t EditPauseMs = 600;
 
 struct Tuning {
@@ -37,18 +36,21 @@ constexpr Tuning Presets[] = {
 };
 
 enum class Mode : uint8_t { Clear, Playing, AdjustRate, AdjustDuty };
-enum class Phase : uint8_t { Clear, Positive, Negative };
+// Two GPIO bits per eye: 00 shorts the electrodes, 01 and 10 drive the LCD.
+enum class Phase : uint8_t { Clear = 0, Positive = 1, Negative = 2 };
 
 struct FrameTiming {
   uint16_t clearMs;
   uint8_t pairs;
   uint8_t halfMs;
   uint8_t longerPairs;
+  uint8_t rightDelayMs;
 };
 
-// All edits live in RAM until saved. The selected slot and custom values fit
-// in one EEPROM byte: two preset bits, three rate bits, three duty bits.
-uint8_t EEMEM savedSettings = 0xff;
+// Byte 0 keeps the original preset/rate/duty encoding. An erased byte 1
+// selects together mode on both a fresh chip and an existing MK1.
+uint8_t EEMEM savedSettings[2] = {0xff, 0xff};
+bool alternating = false;
 uint8_t selectedPreset = 0;
 Tuning custom = Presets[1];
 Tuning draft;
@@ -61,59 +63,69 @@ bool pressed = false;
 bool holdHandled = false;
 uint16_t buttonChangedMs = 0;
 uint16_t pressStartedMs = 0;
+bool tapPending = false;
+uint16_t tapReleasedMs = 0;
 
 volatile uint16_t ticksMs = 0;
 volatile FrameTiming requested = {};  // zero pairs requests clear
-Phase phase = Phase::Clear;
-uint16_t phaseLeftMs = 1;
+volatile bool timingChanged = false;
 FrameTiming active;
-uint8_t pairHalfMs;
 
-void setLensPins(uint8_t pins) {
-  VPORTA.OUT = (VPORTA.OUT & ~LensPins) | pins;
-}
+struct Eye {
+  Phase phase;
+  uint16_t remainingMs;
+  uint8_t pairsLeft;
+  uint8_t longerPairs;
+  uint8_t pairHalfMs;
+};
+Eye leftEye = {}, rightEye = {};
 
-void startPair() {
-  pairHalfMs = active.halfMs;
-  if (active.longerPairs) {
-    ++pairHalfMs;
-    --active.longerPairs;
+void tickEye(Eye &eye, bool stopping) {
+  if (stopping && eye.phase == Phase::Clear) return;
+  if (--eye.remainingMs) return;
+  switch (eye.phase) {
+    case Phase::Clear:
+      eye.pairsLeft = active.pairs;
+      eye.longerPairs = active.longerPairs;
+      break;
+    case Phase::Positive:
+      eye.phase = Phase::Negative;
+      eye.remainingMs = eye.pairHalfMs;
+      return;
+    case Phase::Negative:
+      if (stopping || --eye.pairsLeft == 0) {
+        eye.phase = Phase::Clear;
+        eye.remainingMs = active.clearMs;
+        return;
+      }
+      break;
   }
-  setLensPins(PositivePins);
-  phase = Phase::Positive;
-  phaseLeftMs = pairHalfMs;
+  eye.pairHalfMs = active.halfMs;
+  if (eye.longerPairs) {
+    ++eye.pairHalfMs;
+    --eye.longerPairs;
+  }
+  eye.phase = Phase::Positive;
+  eye.remainingMs = eye.pairHalfMs;
 }
 
 ISR(TCB0_INT_vect) {
   TCB0.INTFLAGS = TCB_CAPT_bm;
   ++ticksMs;
-  if (--phaseLeftMs) return;
-
-  switch (phase) {
-    case Phase::Clear:
-      if (!requested.pairs) {
-        phaseLeftMs = 1;
-        return;
-      }
-      active = {requested.clearMs, requested.pairs,
-                requested.halfMs, requested.longerPairs};
-      startPair();
-      break;
-    case Phase::Positive:
-      setLensPins(NegativePins);
-      phase = Phase::Negative;
-      phaseLeftMs = pairHalfMs;
-      break;
-    case Phase::Negative:
-      if (requested.pairs && --active.pairs) {
-        startPair();
-      } else {
-        setLensPins(0);
-        phase = Phase::Clear;
-        phaseLeftMs = requested.pairs ? active.clearMs : 1;
-      }
-      break;
+  // Finish each eye's current AC pair before restarting the two envelopes.
+  if (timingChanged && leftEye.phase == Phase::Clear && rightEye.phase == Phase::Clear) {
+    active = {requested.clearMs, requested.pairs, requested.halfMs,
+              requested.longerPairs, requested.rightDelayMs};
+    leftEye.remainingMs = 1;
+    rightEye.remainingMs = 1 + active.rightDelayMs;
+    timingChanged = false;
   }
+  if (!active.pairs) return;
+  tickEye(leftEye, timingChanged);
+  tickEye(rightEye, timingChanged);
+  // J3 uses PA1/PA2 and J4 uses PA6/PA7. Update all electrodes together.
+  VPORTA.OUT = (VPORTA.OUT & ~LensPins) | (uint8_t(leftEye.phase) << 1)
+               | (uint8_t(rightEye.phase) << 6);
 }
 
 Tuning selectedTuning() {
@@ -134,17 +146,21 @@ void updateTiming() {
     timing.pairs = (darkHalfMs + 2) / 5;
     timing.halfMs = darkHalfMs / timing.pairs;
     timing.longerPairs = darkHalfMs % timing.pairs;
+    timing.rightDelayMs = alternating ? frameMs / 2 : 0;
   }
   ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
     requested.clearMs = timing.clearMs;
     requested.pairs = timing.pairs;
     requested.halfMs = timing.halfMs;
     requested.longerPairs = timing.longerPairs;
+    requested.rightDelayMs = timing.rightDelayMs;
+    timingChanged = true;
   }
 }
 
 void loadSettings() {
-  const uint8_t settings = eeprom_read_byte(&savedSettings);
+  alternating = eeprom_read_byte(&savedSettings[1]) == 1;
+  const uint8_t settings = eeprom_read_byte(&savedSettings[0]);
   const uint8_t dutyIndex = settings & 0x07;
   if (dutyIndex >= DutySteps) return;  // Includes erased EEPROM (0xff).
   selectedPreset = settings >> 6;
@@ -152,7 +168,7 @@ void loadSettings() {
 }
 
 void saveSettings() {
-  eeprom_update_byte(&savedSettings,
+  eeprom_update_byte(&savedSettings[0],
                      (selectedPreset << 6) | (custom.rateIndex << 3) | custom.dutyIndex);
 }
 
@@ -202,6 +218,10 @@ void hold(uint16_t now) {
 }
 
 void readButton(uint16_t now) {
+  if (tapPending && !pressed && !rawPressed && uint16_t(now - tapReleasedMs) >= DoubleTapMs) {
+    tapPending = false;
+    tap();
+  }
   const bool down = !(VPORTA.IN & ButtonPin);
   if (down != rawPressed) {
     rawPressed = down;
@@ -213,11 +233,22 @@ void readButton(uint16_t now) {
       pressStartedMs = now;
       holdHandled = false;
     } else if (!holdHandled) {
-      tap();
+      if (mode != Mode::Playing) {
+        tap();
+      } else if (tapPending) {
+        tapPending = false;
+        alternating = !alternating;
+        updateTiming();
+        eeprom_update_byte(&savedSettings[1], alternating);
+      } else {
+        tapPending = true;
+        tapReleasedMs = now;
+      }
     }
   }
   if (pressed && rawPressed && !holdHandled && uint16_t(now - pressStartedMs) >= HoldMs) {
     holdHandled = true;
+    tapPending = false;
     hold(now);
   }
 }

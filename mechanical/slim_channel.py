@@ -23,8 +23,8 @@ def cubic_loft(sections):
     return cq.Solid(builder.Shape())
 
 
-def swept_profile(stations, rows):
-    """Cubic Hermite rails with the specified Bezier cross sections, exactly in X."""
+def swept_profile(stations, rows, *, control_sections=False):
+    """Loft Bézier sections with interpolating Hermite rails or a C2 control net."""
 
     def knots(values, kind):
         result = kind(1, len(values))
@@ -39,22 +39,29 @@ def swept_profile(stations, rows):
             edges.append(cq.Edge.makeLine(*pts) if len(pts) == 2 else cq.Edge.makeBezier(pts))
         return cq.Face.makeFromWires(cq.Wire.assembleEdges(edges))
 
-    u_knots = knots(stations, TColStd_Array1OfReal)
-    u_mult = knots([4] + [3] * (len(stations) - 2) + [4], TColStd_Array1OfInteger)
+    if control_sections:
+        # Simple interior knots give continuous curvature across the visible shell.
+        u_knots = knots(range(len(rows) - 2), TColStd_Array1OfReal)
+        u_mult = knots([4] + [1] * (len(rows) - 4) + [4], TColStd_Array1OfInteger)
+    else:
+        u_knots = knots(stations, TColStd_Array1OfReal)
+        u_mult = knots([4] + [3] * (len(stations) - 2) + [4], TColStd_Array1OfInteger)
     v_knots = knots([0.0, 1.0], TColStd_Array1OfReal)
     faces = [cap(rows[0]), cap(rows[-1])]
     for section_curve in zip(*rows):
         coords = np.array(section_curve)
-        derivatives = PchipInterpolator(stations, coords, axis=0).derivative()(stations)
-        controls = [coords[0]]
-        for i, dx in enumerate(np.diff(stations)):
-            controls.extend(
-                (
-                    coords[i] + dx / 3 * derivatives[i],
-                    coords[i + 1] - dx / 3 * derivatives[i + 1],
-                    coords[i + 1],
+        controls = coords
+        if not control_sections:
+            derivatives = PchipInterpolator(stations, coords, axis=0).derivative()(stations)
+            controls = [coords[0]]
+            for i, dx in enumerate(np.diff(stations)):
+                controls.extend(
+                    (
+                        coords[i] + dx / 3 * derivatives[i],
+                        coords[i + 1] - dx / 3 * derivatives[i + 1],
+                        coords[i + 1],
+                    )
                 )
-            )
         degree = coords.shape[1] - 1
         poles = TColgp_Array2OfPnt(1, len(controls), 1, degree + 1)
         for i, row in enumerate(controls, 1):

@@ -5,12 +5,11 @@ from itertools import combinations
 from pathlib import Path
 
 import cadquery as cq
-from scipy.interpolate import PchipInterpolator
 from vtkmodules.vtkFiltersCore import vtkFeatureEdges, vtkPolyDataConnectivityFilter
 from vtkmodules.vtkIOGeometry import vtkSTLReader
 
 from build_slim import emboss_wordmark, on_print_bed, overlap
-from slim_channel import CrownChannel, brow_z, channel_frame, cubic_loft, front_y
+from slim_channel import CrownChannel, brow_z, channel_frame, front_y, swept_profile
 from slim_frame import SlimFrameParams, _aperture, _box, _front_flare, _rounded, place_at_lens
 from slim_harness import brow_to_header, lens_point, plug_backs, rounded_path, tube
 from slim_mount import (
@@ -27,7 +26,7 @@ MEASURED_GLASS = 1.83
 SLOT_DEPTH = 2.20
 PIN_BAY_BOTTOM = FLOOR + 35.8 - 3.0  # 3 mm below the shortest specified glass.
 CAP_STOP = 19.45
-POST_TOP = 19.7
+POST_TOP = 21.8
 SCREW_X = 52.65
 HEAD_SEAT = POST_TOP + 1.5
 COLLAR_R = 1.85
@@ -43,24 +42,91 @@ def cylinder(radius, bottom, top, x, y):
 
 
 def keeper_spine(p, clearance=False):
-    # The slim strip runs along the wearer side, winding behind each pair of
-    # pins. Its front edge follows the nose roll and drops below the fixed ridge.
-    stations = [0, 5.2, 11, 18, 25, 35.5, 42, 48, SCREW_X]
-    near = PchipInterpolator(stations, [4.95, 5.2, 6.65, 8.20, 10.75, 10.75, 8.65, 8.35, 8.35])
-    sections = []
-    for x in [-v for v in reversed(stations[1:])] + stations:
-        y = front_y(p, x) - float(near(abs(x))) - 1.12
-        z = brow_z(p, x) - 1.30
-        depth, bottom, top = 2.24, z - 1.00, z + 1.00
+    # Control sections for a single cubic B-spline. Positive offsets from the
+    # front datum go toward the face. Four shallow wings reach the glass corners.
+    # x, leading edge offset, trailing edge offset, crest above the original brow
+    half = [
+        (0.0, -1.95, 5.15, 3.00),
+        (4.5, -1.85, 6.10, 3.05),
+        (9.5, -1.72, 7.95, 3.12),
+        (13.5, -1.62, 8.32, 3.16),
+        (16.5, -1.56, 7.75, 3.13),
+        (21.0, -1.48, 4.85, 3.03),
+        (25.0, -1.46, 2.56, 2.80),
+        (30.4, -1.48, 2.22, 2.70),
+        (35.0, -1.64, 2.48, 2.81),
+        (40.0, -2.12, 4.78, 3.04),
+        (44.0, -2.90, 7.90, 3.13),
+        (47.0, -3.75, 8.52, 3.18),
+        (49.0, -4.80, 7.70, 3.24),
+        (51.1, -6.30, 3.82, 3.28),
+        (53.2, -6.63, 2.05, 3.24),
+        (55.0, -6.42, 1.22, 3.00),
+        (56.6, -5.00, 0.40, 2.50),
+        (57.4, -3.35, -2.55, 1.90),
+    ]
+    sections = [(-x, *v) for x, *v in reversed(half[1:])] + half
+    stations, rows = [], []
+    for x, near, far, rise in sections:
+        y, z = front_y(p, x), brow_z(p, x)
+        width = far - near
+        # The underside climbs over the fixed wires. Its low front edge seats in
+        # the outside rim. Every feature clears by a straight vertical translation.
+        lip = min(width * 0.36, max(0.38, -near - 1.25))
+        ramp = min(1.35, (width - lip) * 0.50)
+        base = max(POST_TOP + 0.08, z - 0.78) if abs(x) > 49 else z - 0.78
+        roof = max(base + 0.72, z + 1.32)
+        crest = max(z + rise, roof + 1.28)
+        front, back = y - near, y - far
         if clearance:
-            depth, bottom, top = depth + 0.55, bottom - 0.20, 32.0
-        wire = cq.Workplane("YZ", origin=(x, y, (top + bottom) / 2)).rect(depth, top - bottom).val()
-        sections.append(wire.fillet2D(0.35, wire.Vertices()))
-    return cubic_loft(sections)
+            extension = max(0, (abs(x) - 55.0) / (57.4 - 55.0)) * 0.35
+            x += extension if x > 0 else -extension
+            # Move the ramp rearward as well as down so it clears the rising underside.
+            lo, hi = base - 0.27, roof - 0.27
+            a, b = (x, front + 0.32, lo), (x, front - lip - 0.32, lo)
+            c, d = (x, front - lip - ramp - 0.32, hi), (x, back - 0.32, hi)
+            row = [
+                (a, b),
+                (b, (x, b[1] - 0.32 * ramp, lo), (x, c[1] + 0.32 * ramp, hi), c),
+                (c, d),
+                (d, (x, back - 0.32, 35)),
+                ((x, back - 0.32, 35), (x, front + 0.32, 35)),
+                ((x, front + 0.32, 35), a),
+            ]
+        else:
+
+            def pt(t, height):
+                return (x, front - width * t, height)
+
+            a = (x, front - lip, base)
+            b = (x, front - lip - ramp, roof)
+            # A long pitched upper face has one soft highlight. The front radius
+            # rolls into it. The rear edge is rounded where fingers lift the cover.
+            u = pt(0.22, crest)
+            v = pt(0.89, crest - 0.42)
+            w = pt(1, roof + 0.35)
+            row = [
+                ((x, front - 0.18, base), a),
+                (a, (x, a[1] - 0.32 * ramp, base), (x, b[1] + 0.32 * ramp, roof), b),
+                (b, (x, back + 0.22, roof)),
+                ((x, back + 0.22, roof), (x, back + 0.07, roof), (x, back, roof + 0.15), w),
+                (w, pt(1, crest - 0.70), pt(0.975, crest - 0.51), v),
+                (v, pt(0.70, crest - 0.24), pt(0.39, crest), u),
+                (u, pt(0.14, crest), pt(0, base + 1.20), pt(0, base + 0.48)),
+                (
+                    pt(0, base + 0.48),
+                    pt(0, base + 0.20),
+                    (x, front - 0.04, base),
+                    (x, front - 0.18, base),
+                ),
+            ]
+        stations.append(x)
+        rows.append(row)
+    return swept_profile(stations, rows, control_sections=True)
 
 
 def screw_sites(p):
-    return [(side * SCREW_X, front_y(p, SCREW_X) - 9.45) for side in (-1, 1)]
+    return [(side * SCREW_X, front_y(p, SCREW_X) + 2.80) for side in (-1, 1)]
 
 
 def build_parts(p):
@@ -98,16 +164,27 @@ def build_parts(p):
         frame = frame.cut(placed(box(12.6, 6.8, PIN_BAY_BOTTOM, 60, x, PANE_Y)))
         for edge in (-1, 1):
             tab_x = x + edge * 17.40
+            # Only the underside touches a raised pane. The oval lands blend
+            # into the swept crown above instead of interrupting its top face.
             tab = (
-                cq.Workplane("XY")
-                .box(5.25, 5.95, 2.20)
-                .edges("|Z")
-                .fillet(0.75)
-                .edges("not |Z")
-                .fillet(0.22)
-                .translate((tab_x, -4.98, CAP_STOP + 1.10))
+                cq.Workplane("XY", origin=(tab_x, -3.0, CAP_STOP))
+                .ellipse(2.85, 1.55)
+                .extrude(0.96)
+                .faces("<Z")
+                .edges()
+                .fillet(0.20)
                 .val()
             )
+            # A narrower stem joins from beneath the skin, keeping all four
+            # stops below the continuous upper surface.
+            stem_x = lens_point(p, side, edge * 17.40, -2.53, 0)[0]
+            stem = (
+                cq.Workplane("XY", origin=(tab_x, -2.53, CAP_STOP + 0.62))
+                .ellipse(1.78, 0.87)
+                .extrude(brow_z(p, stem_x) + 1.73 - CAP_STOP - 0.62)
+                .val()
+            )
+            tab = tab.fuse(stem)
             key_x = x + edge * (p.glass_w / 2 + p.pocket_clearance + 0.8)
             tip = (
                 cq.Workplane("XY", origin=(key_x, PANE_Y, 17.0))
@@ -122,47 +199,48 @@ def build_parts(p):
             key = tip.fuse(box(1.60, 2.72, 18.45, CAP_STOP + 0.65, key_x, PANE_Y))
             cap = cap.fuse(placed(tab), placed(key))
             frame = frame.cut(
-                placed(box(5.85, 6.55, CAP_STOP - 0.2, 32, tab_x, -4.98)),
+                placed(
+                    cq.Workplane("XY", origin=(tab_x, -3.0, CAP_STOP - 0.2))
+                    .ellipse(3.22, 1.88)
+                    .extrude(15)
+                    .val()
+                ),
                 placed(box(2.40, 3.52, 16.65, 32, key_x, PANE_Y)),
             )
     frame = frame.cut(relief)
     for x, y in screw_sites(p):
         frame = frame.cut(cylinder(3.04, POST_TOP, 32, x, y))
+        # A tapered boss grows out of the outer rim below the wire trough.
         post = (
-            cq.Workplane("XY")
-            .box(5.6, 9.2, 5.3)
-            .edges("|Z")
-            .fillet(2.35)
-            .faces("<Z")
-            .edges()
-            .fillet(0.55)
-            .translate((x, y + 1.9, POST_TOP - 2.65))
+            cq.Workplane("XY", origin=(x, y - 6.0, POST_TOP - 10.2))
+            .ellipse(4.2, 2.45)
+            .workplane(offset=3.6)
+            .center(0, 3.9)
+            .ellipse(3.85, 3.2)
+            .workplane(offset=3.45)
+            .center(0, 1.35)
+            .ellipse(3.40, 3.18)
+            .workplane(offset=3.15)
+            .center(0, 0.75)
+            .circle(2.97)
+            .loft()
             .val()
         )
-        # The temple becomes thin here. Anchor each post into the front skin
-        # below the wire bed, leaving the original shoulder passage open above.
-        foot = (
-            cq.Workplane("XY")
-            .box(5.0, 7.15, 2.85)
-            .edges("|Z")
-            .fillet(1.5)
-            .edges("not |Z")
-            .fillet(0.36)
-            .translate((x, y + 5.30, 16.1))
-            .val()
+        # Keep the foot inside the outer skin; added hardware must never form
+        # a bump on the original temple's wearer-facing surface.
+        side = 1 if x > 0 else -1
+        outside = place_at_lens(
+            box(150, 80, 5, 35, side * p.pd / 2, p.front_y - 1.15 + 40), p, side
         )
-        frame = frame.fuse(post, foot, cylinder(COLLAR_R, POST_TOP - 0.12, POST_TOP + 0.55, x, y))
+        post = post.intersect(outside)
+        if side > 0:
+            # The reinforced pilot floor shares the outer shoulder. Carry the
+            # original cable trough through its foot, including the crimp passage.
+            _, trough = CrownChannel(p, True).shapes()
+            post = post.cut(trough)
+        frame = frame.fuse(post, cylinder(COLLAR_R, POST_TOP - 0.12, POST_TOP + 0.55, x, y))
         frame = frame.cut(cylinder(RESIN_PILOT_DIAMETER / 2, POST_TOP - 3.95, POST_TOP + 0.8, x, y))
-        ear = (
-            cq.Workplane("XY", origin=(x, y, POST_TOP))
-            .circle(2.82)
-            .extrude(3.35)
-            .faces(">Z")
-            .edges()
-            .fillet(0.28)
-            .val()
-        )
-        cap = cap.fuse(ear)
+        cap = cap.fuse(cylinder(2.79, POST_TOP, POST_TOP + 2.42, x, y))
         # One round socket, one longitudinally relieved socket for resin shrinkage.
         travel = 0.40 if x > 0 else 0.0
         for radius, bottom, top in (
@@ -205,7 +283,7 @@ def routed_leads(p):
         for pin, dx in enumerate((-2.54, 2.54), 1):
             top = FLOOR + p.glass_h + PIN_HEIGHT
             x, y, z = lens_point(p, side, dx, PANE_Y, top)
-            lane = (0.55 + (pin - 1) * 1.65) if side < 0 else (3.15 + (pin - 1) * 1.15)
+            lane = 4.10 + (pin - 1) * 1.35
             front = front_y(p, x) - lane
             crown = brow_z(p, x) + 1.0
             # The free insulated lead bends over toward the fixed ridge. The
@@ -234,6 +312,16 @@ def check_fit(p, frame, cap):
 
         def placed(s):
             return place_at_lens(s, p, side)
+
+        # Unwrap each half into its lens plane. The rear rim sits at -5.70 mm
+        # and both straight terminals must stay entirely on the wearer's side.
+        half = cap.intersect(box(100, 170, -20, 100, side * 50, 0))
+        local = half.rotate((x, p.pivot_y, 0), (x, p.pivot_y, 1), side * p.wrap_degrees)
+        if local.BoundingBox().ymin < -5.70 + 0.45:
+            raise ValueError("Brow protrudes toward the face beyond its design allowance")
+        pins = local.intersect(box(11, 100, -20, 60, x, 0))
+        if pins.BoundingBox().ymin < PANE_Y + 2.80:
+            raise ValueError("Brow crosses the front of the upright terminal bay")
 
         # Sweep the maximum glass AND a full-thickness tab on either edge from
         # completely above the brow to the floor, with 0.15 mm lateral and 0.075 mm face allowance.
@@ -291,6 +379,16 @@ def check_fit(p, frame, cap):
                 if overlap(frame, gauge) < gauge.Volume() - 0.001:
                     raise ValueError("Crown cable guide lost its floor or roof")
     for x, y in screw_sites(p):
+        # Sample just inside each mating face to avoid coplanar Boolean ambiguity.
+        seat = cylinder(2.68, POST_TOP + 0.004, POST_TOP + 0.052, x, y).cut(
+            cylinder(2.50, POST_TOP + 0.002, POST_TOP + 0.054, x, y)
+        )
+        for solid, gauge in ((cap, seat), (frame, seat.translate((0, 0, -0.056)))):
+            if overlap(solid, gauge) < seat.Volume() * 0.95:
+                raise ValueError("Cap and post lack a common bearing surface")
+        head_bearing = cylinder(1.675, HEAD_SEAT - 0.10, HEAD_SEAT, x, y)
+        if overlap(cap, head_bearing) < 0.215:
+            raise ValueError("Insufficient material under the recessed screw head")
         clear(cap, cylinder(1.0, HEAD_SEAT - 4, HEAD_SEAT, x, y), "Screw shank in cap")
         clear(cap, cylinder(1.675, HEAD_SEAT + 0.005, HEAD_SEAT + 1.605, x, y), "Screw head")
         clear(cap, cylinder(1.90, HEAD_SEAT + 1.60, HEAD_SEAT + 25, x, y), "Driver access")

@@ -1,4 +1,7 @@
-# MK1 Slim
+# MK1 rear-loading prototype
+
+The current [top-loading frame](TOP_LOAD.md) uses one valve per eye. The
+original battery mount and strap details below also apply to that frame.
 
 The current fit trial uses the printed frame and rear retainer without face foam.
 The first resin print's retainer did not reliably latch. Check it with the frame

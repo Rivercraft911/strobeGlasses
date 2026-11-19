@@ -54,13 +54,48 @@ def lens_point(p, side, offset, y, z):
     )
 
 
+def brow_to_header(p, side, pin, header_z, bridge, shoulder):
+    """Wire centerline stations common to both frames, from the brow to the PCB."""
+    shift = (p.pd - 60.8) / 2
+    mount = p.temple_half_width
+    extra_crown = .50 * (1 - p.wrap_degrees / 20)
+    points = []
+    col = pin - 1
+    row = 1 if side < 0 else 0
+    if side < 0:
+        for x in bridge.x:
+            points.append(bridge.wire_point(x, 0.5 - col))
+        # Pass the service opening in front of the right LCD terminals.
+        for x in (28 + shift, 34 + shift):
+            points.append((x, front_y(p, x) - (0.86 + 1.12 * col), brow_z(p, x) + 0.60))
+    for x in shoulder.x:
+        points.append(shoulder.wire_point(x, 2 * row - 0.5 - col))
+    points.append(
+        (
+            mount - 6,
+            front_y(p, 52 + shift) - 7.8 + 2.6 * row - 0.5 * col,
+            19.95 + 1.2 * col + extra_crown,
+        )
+    )
+    pin_z = header_z + (pin - 1.5)
+    points.extend(
+        [
+            (mount - 2 + 0.8 * col, -15.8 + 3 * row - 0.65 * col, 16.6 + 1.35 * col),
+            (mount + 1.6 + 1.25 * col, -17.5 + 3.5 * row - 0.3 * col, 13.3 + 1.25 * col),
+            (mount + 4 + 1.2 * col, -16.6 + 4.2 * row, 9.3 + 1.5 * col),
+            (mount + 6.5 + 1.3 * col, -12.3 + 4.5 * row, 6.9 - 5.9 * row + 1.65 * col),
+            (mount + PLUG_AXIS_OFFSET_X, -9.6 + 3.8 * row - 0.1 * col, pin_z),
+            (mount + PLUG_AXIS_OFFSET_X, EYE_HEADER_FACE_Y + PLUG_PROJECTION, pin_z),
+        ]
+    )
+    return points
+
+
 def build_harness(p):
     parts, report = {}, {}
     mount = p.temple_half_width
-    shift = (p.pd - 60.8) / 2
     bridge = CrownChannel(p, False)
     shoulder = CrownChannel(p, True)
-    extra_crown = 0.50 * (1 - p.wrap_degrees / 20)
 
     def add(name, points, bend):
         path, radius = rounded_path(points, bend)
@@ -99,34 +134,7 @@ def build_harness(p):
             turn = lens_point(p, side, offset + 0.53, p.pane_y - p.terminal_length - 2.15, front_z)
             lift = (turn[0], turn[1], brow_z(p, turn[0]) + 0.56)
             points = [start, turn, lift]
-            col = pin - 1
-            row = 1 if side < 0 else 0
-            if side < 0:
-                for x in bridge.x:
-                    points.append(bridge.wire_point(x, 0.5 - col))
-                # Pass the service opening in front of the right LCD terminals.
-                for x in (28 + shift, 34 + shift):
-                    points.append((x, front_y(p, x) - (0.86 + 1.12 * col), brow_z(p, x) + 0.60))
-            for x in shoulder.x:
-                points.append(shoulder.wire_point(x, 2 * row - 0.5 - col))
-            points.append(
-                (
-                    mount - 6,
-                    front_y(p, 52 + shift) - 7.8 + 2.6 * row - 0.5 * col,
-                    19.95 + 1.2 * col + extra_crown,
-                )
-            )
-            pin_z = header_z + (pin - 1.5)
-            points.extend(
-                [
-                    (mount - 2 + 0.8 * col, -15.8 + 3 * row - 0.65 * col, 16.6 + 1.35 * col),
-                    (mount + 1.6 + 1.25 * col, -17.5 + 3.5 * row - 0.3 * col, 13.3 + 1.25 * col),
-                    (mount + 4 + 1.2 * col, -16.6 + 4.2 * row, 9.3 + 1.5 * col),
-                    (mount + 6.5 + 1.3 * col, -12.3 + 4.5 * row, 6.9 - 5.9 * row + 1.65 * col),
-                    (mount + PLUG_AXIS_OFFSET_X, -9.6 + 3.8 * row - 0.1 * col, pin_z),
-                    (mount + PLUG_AXIS_OFFSET_X, EYE_HEADER_FACE_Y + PLUG_PROJECTION, pin_z),
-                ]
-            )
+            points.extend(brow_to_header(p, side, pin, header_z, bridge, shoulder))
             add(f"wire_{header}_{eye}_{pin}", points, 3.0)
     # The drawing puts the wires side by side across the narrow end of the
     # pouch. The two curves leave that face normally and meet J2 on axis.

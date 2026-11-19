@@ -30,7 +30,7 @@ saved Custom values survive power cycles.
 The timer splits every dark window into balanced AC pairs near 100 Hz.
 Stopping finishes the current pair and drives both leads low. FPS and duty
 describe the electrical timing. Check optical contrast and clearing on the
-assembled valve stacks.
+installed valves.
 
 ## Flash with UPDI
 
@@ -69,6 +69,6 @@ arduino-cli compile --fqbn megaTinyCore:megaavr:atxy2:chip=402,clock=5internal,b
    J3 pin 1 and J4 pin 1 together, with both grounds on TP3. Double-tap
    SW2. The bursts should now start 100 ms apart on Balanced. Double-tap
    again for simultaneous bursts. Hold for 0.8 s to clear both eyes.
-4. Power down, connect one two-valve stack, then repower at 3.3 V. Repeat
-   with both stacks. Compare the loaded waveform with the unloaded result
-   and check that the stacked valves darken and clear together.
+4. Power down, connect one valve, then repower at 3.3 V. Repeat
+   with both eyes connected. Compare the loaded waveform with the unloaded result
+   and check that each valve darkens and clears as selected.

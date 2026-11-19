@@ -1,7 +1,7 @@
 """Thin rims for two stacks of Adafruit 3627 LCD valves.
 
 X runs across the face, Y points forward, and Z points up. The front and
-the retainer are printed parts. Cut foam pads stick to the retainer.
+the retainer are printed parts. Face pads are optional.
 """
 
 from dataclasses import dataclass
@@ -32,7 +32,7 @@ class SlimFrameParams:
     latch_deflection: float = 0.90
     latch_beam_width: float = 1.30
     foam_thickness: float = 3.175
-    foam_layers: int = 2
+    foam_layers: int = 0
     wrap_degrees: float = 20.0
     terminal_length: float = 3.5
 
@@ -275,7 +275,7 @@ def _face_pad(p, x):
 
 def build_foam_reference(params=None):
     p = params or SlimFrameParams()
-    layers = (_foam,) if p.foam_layers == 1 else (_foam, _face_pad)
+    layers = (_foam, _face_pad)[:p.foam_layers]
     return {f"foam_{name}_{layer}": place_at_lens(profile(p, side * p.pd / 2), p, side)
             for side, name in ((-1, "left"), (1, "right"))
             for layer, profile in enumerate(layers, 1)}
@@ -290,19 +290,17 @@ def lens_spacer(p, x):
 def cut_templates(p):
     """Return flat outlines for the foam and optical separator stock."""
     x = p.pd / 2
-    base, face = _foam(p, x), _face_pad(p, x)
-    shim_y = p.foam_y - 4
-    temple = face.intersect(_box(10, 8, 26, x + 19.6, shim_y, 1))
-    cheek = face.intersect(_box(26, 8, 8, x + 4, shim_y, -17.5))
     # Both staggered panes cover this outline. The inner hole clears the
     # optical bore, and the outer edge avoids both of the lower pane stops.
-    separator = lens_spacer(p, x)
-    profiles = {
-        "foam-template.svg": ("Base pads", (base,)),
-        "foam-face-template.svg": ("Face pads", (face,)),
-        "foam-shim-template.svg": ("Cheek and temple shims", (cheek, temple)),
-        "valve-spacer-template.svg": ("0.5 mm valve spacers", (separator,)),
-    }
+    profiles = {"valve-spacer-template.svg": ("0.5 mm valve spacers", (lens_spacer(p, x),))}
+    if p.foam_layers:
+        base, face = _foam(p, x), _face_pad(p, x)
+        shim_y = p.foam_y - 4
+        temple = face.intersect(_box(10, 8, 26, x + 19.6, shim_y, 1))
+        cheek = face.intersect(_box(26, 8, 8, x + 4, shim_y, -17.5))
+        profiles["foam-template.svg"] = ("Base pads", (base,))
+        profiles["foam-face-template.svg"] = ("Face pads", (face,))
+        profiles["foam-shim-template.svg"] = ("Cheek and temple shims", (cheek, temple))
     return {
         name: (label, [wire for profile in pieces for part in (profile, profile.mirror("YZ"))
                        for wire in part.faces(">Y").wires().vals()])
@@ -330,9 +328,10 @@ def design_metadata(params=None):
         "rigid_optical_depth": p.front_y - p.foam_y,
         "foam_layers": p.foam_layers,
         "foam_layer_thickness": p.foam_thickness,
-        "foam_base_opening": [33.2, 29.6],
-        "foam_face_opening": [35.0, 31.6],
-        "foam_to_rear_glass_unloaded": glass_to_retainer + foam_stack,
+        "foam_base_opening": [33.2, 29.6] if p.foam_layers else None,
+        "foam_face_opening": [35.0, 31.6] if p.foam_layers == 2 else None,
+        "retainer_to_rear_glass": glass_to_retainer,
+        "foam_to_rear_glass_unloaded": glass_to_retainer + foam_stack if p.foam_layers else None,
         "total_optical_depth": p.front_y - p.foam_y + foam_stack,
         "remaining_terminal_length": p.terminal_length,
         "retainer_thickness": p.retainer_thickness,

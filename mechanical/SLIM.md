@@ -1,6 +1,8 @@
 # MK1 Slim
 
-Print the frame and shared snap-in lens retainer in Formlabs Tough resin.
+The current fit trial uses the printed frame and rear retainer without face foam.
+The first resin print's retainer did not reliably latch. Check it with the frame
+empty before installing glass or trying the glasses on.
 For a Form 4-series printer, use Tough 2000 Resin V2. The raised rivercraft
 lettering sits above the right lens, and the battery sits underneath the PCB
 on the right arm. [Formlabs material and printer compatibility](https://formlabs.com/products/tough-2000-resin/)
@@ -38,6 +40,21 @@ on the right arm. [Formlabs material and printer compatibility](https://formlabs
    the screws by hand with a T6 driver until the washers just seat. Each screw
    forms its thread on first installation. [McMaster screw dimensions](https://www.mcmaster.com/products/screws/drive-size~ip6/) · [Formlabs guide to fastening in resin](https://formlabs.com/uk/blog/adding-screw-threads-3d-printed-parts/)
 
+### Single-valve and tint trial
+
+The pocket also accepts a single valve in the front position. Connect one
+valve to each eye output and omit the rear-pane jumpers. The second modeled
+valve and its separator occupied 2.5 mm. Fit the perimeter shim to the actual
+gap, keeping pressure off the viewing area and both terminals.
+
+For a tint trial, hold a flat swatch of fixed neutral-density lighting gel
+in front of the single valve. Compare bare and tinted views against a white
+wall at the frame's 20° lens angle in both clear and dark states. LEE 209
+passes about half the daylight reaching it. LEE 298 passes about 69%.
+The tint dims both states proportionally. Keep it removable until the
+preferred density and the retainer fit are established.
+[LEE 209](https://leefilters.com/colour/209-0-3nd/) · [LEE 298](https://leefilters.com/colour/298-0-15nd/)
+
 ### Route the harness
 
 The left pair crosses the fixed brow to **J3**. The right pair follows the
@@ -74,27 +91,11 @@ is 21.5 ± 3 mm from the pack to the back of the plug. The two CAD routes are 17
 leaves about 0.3 mm at the shortest specified lead length. Dry-fit the pack
 and close the board only when the plug seats without tension. J2 pin 1 is battery positive. [Battery drawing](https://cdn.sparkfun.com/assets/4/f/c/6/3/SPE-DTP301120SH-3.7V-40mah-En-1.0V.pdf)
 
-## Make the light seal and strap
+## Fit the frame and strap
 
-Print both foam templates at 100% and check their 20 mm rulers. Cut the
-base pads from `foam-template.svg` and the face pads from
-`foam-face-template.svg` using ZUSA-PU-43, an extra-soft, adhesive-backed
-open-cell polyurethane. The sheet is 1/8″ thick and takes 0.9 psi to compress
-by 25%. One 13″ square sheet fits five sets of both templates.
-[Foam specifications](https://www.fixsupply.com/zusa-pu-43-black-polyurethane-foam-sheet-with-acrylic-adhesive-2-lbs-cu-ft-1-8-thick-x-13-wide-x-13-long)
-
-Stick each notched base pad to the retainer with the notch up. Stick the
-wider-opening face pad on top, with bare foam toward the skin. The two layers
-give 6.35 mm of cushion before compression. Keep the wires flush in their
-channels and trim the pad locally if needed. Try the first pair unpowered.
-
-With the strap lightly tensioned, blink normally and look up and down.
-Check lash clearance and that the foam lands evenly around the brow and
-cheeks. Use one layer if it clears your lashes and seals comfortably.
-If you can see outside light near the cheeks or temples, cut local strips
-with `foam-shim-template.svg`. Add one layer where needed and taper the
-ends into the face pad. Keep each strip backed by the pad underneath.
-Try the strips provisionally and check normal head movements before bonding.
+Once the retainer holds securely, try the frame unpowered with the strap
+lightly tensioned. Check that the brow and nose carry the frame comfortably
+and that your lashes clear the glass through a full blink and upward gaze.
 The 126 mm temple measurement sets the fit target, and the straight inner
 arms are 138 mm apart. The strap bars span about 143 mm on the outside.
 
@@ -125,7 +126,6 @@ printed rear bar. The same friction loop attaches each end without sewing.
 | 10 | [JST ASSHSSH28K305, 305 mm, 28 AWG, socket at each end](https://www.digikey.com/en/products/detail/jst-sales-america-inc/ASSHSSH28K305/6009453) |
 | 1 roll | [Airisoer 3/4″ black flat elastic, 12 yd](https://www.amazon.com/dp/B0CBYLZM5Q) |
 | 10 | [Strapworks PLH-SLD-034-WDM-BLK, 3/4″ wide-mouth sliders](https://www.strapworks.com/34-inch-plastic-slide-wide-mouth-black) |
-| 1 sheet | USA Sealing ZUSA-PU-43, extra-soft adhesive-backed foam, 13 × 13 × 1/8″. [Amazon](https://www.amazon.com/dp/B07Y5LJM39) · [DigiKey](https://www.digikey.com/en/products/detail/fix-supply/ZUSA-PU-43/17751031) |
 
 With the 1.0 mm PCB and specified washers, the screws extend 2.6–2.8 mm
 into the posts. The centered washers overlap the board notches and clear the
@@ -143,12 +143,9 @@ Allow 3.5 m of elastic for five starting lengths.
 
 - The front and rear design datums are 7.25 mm apart along the lens normal.
   The retainer plate is 1.05 mm thick, with 1.25 mm at the snap beams.
-  One foam layer brings local depth to 10.43 mm and two to 13.60 mm before
-  compression.
-- With both layers, the modeled distance from the rear glass to the face
-  of the foam is 7.75 mm unloaded, 5.53 mm at 35% compression and 4.58 mm
-  at 50%. Actual squeeze depends on the wearer and strap tension. Blink
-  and look up and down to check lash clearance on the first pair.
+  With bare rims, the rear glass surface is recessed 1.40 mm from the
+  wearer-facing retainer plane. A single valve in the modeled front
+  position is recessed 3.90 mm. Actual lash clearance depends on fit.
 - The 34.4 × 31.2 mm front bevel tapers to the 32 × 28.3 mm optical bore.
   The snap channel opens inward at its entry. The 1.30 mm wide spring
   beam has 0.30 mm nominal lateral clearance in the straight guide.
@@ -157,11 +154,10 @@ Allow 3.5 m of elastic for five starting lengths.
   those shims against the actual panel thickness before seating the retainer.
 - The snap check moves both hooks through withdrawal with 0.90 mm inward
   travel. The cured coupon checks actual flex and print tolerance.
-- Straight through, the 32 × 28.3 mm rounded apertures clear both foam pads
-  and the retainer. The wearer view shows their alignment.
+- The retainer clears the 32 × 28.3 mm optical apertures.
 - On the unscaled NIOSH Small headform, the wrap reduced the projected
   rear glass-to-headform gap at eye height from about 21 to 16.5 mm at the
-  aligned pose. The cheek and temple gaps call for local pad fitting.
+  aligned pose. That reference pose predates the foam-free fit trial.
   Check the real LCDs at 20° incidence and check comfort with the glasses
   unpowered. [NIOSH headforms](https://stacks.cdc.gov/view/cdc/223510)
 - The strap slots leave 3.1 mm of material on each side along the band
@@ -191,7 +187,8 @@ sweep adds 0.30 mm at each side and above and below. These are modeled
 print-error allowances. Try the single-eye coupon on your machine.
 
 The default builds the resin frame with pilots for the thread-forming screws.
-Pass `--foam-layers 1` to export the one-layer assembly.
+Foam is omitted by default. Pass `--foam-layers 1` or `--foam-layers 2` to
+rebuild a padded assembly with its original cutting templates.
 Use `--wrap-degrees 0` for the flat comparison. For a repository checkout,
 generate the populated board STEP from the project root with KiCad CLI.
 

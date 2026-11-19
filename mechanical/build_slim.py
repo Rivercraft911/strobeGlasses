@@ -290,6 +290,13 @@ def build(params, mount_x, pcb_step, output, insert_diameter, insert_depth):
     export_guide_coupon(printable["slim_frame"], params, output)
     if collisions:
         raise ValueError(f"Interferences: {collisions}")
+    # Remove obsolete pad exports when rebuilding a padded assembly in place.
+    for eye in ("left", "right"):
+        for layer in range(params.foam_layers + 1, 3):
+            (preview_dir / f"foam_{eye}_{layer}.stl").unlink(missing_ok=True)
+    if not params.foam_layers:
+        for name in ("foam-template.svg", "foam-face-template.svg", "foam-shim-template.svg"):
+            (output / name).unlink(missing_ok=True)
     print(f"Saved {len(printable)} print parts and the bare assembly to {output}")
 
 
@@ -297,7 +304,7 @@ def main():
     parser = ArgumentParser(description=__doc__)
     parser.add_argument("--pd", type=float, default=60.8)
     parser.add_argument("--temple-width", type=float, default=126)
-    parser.add_argument("--foam-layers", type=int, choices=(1, 2), default=2)
+    parser.add_argument("--foam-layers", type=int, choices=(0, 1, 2), default=SlimFrameParams.foam_layers)
     parser.add_argument("--wrap-degrees", type=float, choices=(0, 20), default=20)
     parser.add_argument("--insert-diameter", type=float, help="Use heat-set posts for PETG instead of the thread-forming screws in resin")
     parser.add_argument("--insert-depth", type=float, default=4.0)

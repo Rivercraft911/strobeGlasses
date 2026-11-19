@@ -5,8 +5,11 @@
 #include <avr/wdt.h>
 #include <util/atomic.h>
 
-#if !defined(__AVR_ATtiny402__) || F_CPU != 5000000UL || !defined(MILLIS_USE_TIMERNONE)
-#error "Select ATtiny402, 5 MHz internal, and disable millis()/micros()."
+#if !defined(__AVR_ATtiny402__) || F_CPU != 5000000UL
+#error "Select ATtiny402 and 5 MHz internal."
+#endif
+#if !defined(MILLIS_USE_TIMERA0) && !defined(MILLIS_USE_TIMERNONE)
+#error "Use the default ATtiny402 millis timer (TCA0) or disable millis."
 #endif
 
 // MK1: PA0 stays dedicated to UPDI. The charge LED has no MCU connection.
@@ -226,8 +229,9 @@ void setup() {
   rawPressed = pressed = holdHandled = !(VPORTA.IN & ButtonPin);
   loadSettings();
 
-  // TCB0 supplies a 1 ms tick. Idle sleep keeps it running between interrupts.
+  // The sketch uses TCB0 for all timing. Stop the core's default TCA0 tick.
   TCA0.SINGLE.CTRLA = 0;
+  TCA0.SPLIT.INTCTRL = 0;
   TCB0.CTRLA = 0;
   TCB0.CTRLB = TCB_CNTMODE_INT_gc;
   TCB0.CCMP = F_CPU / 2 / 1000 - 1;
@@ -236,7 +240,8 @@ void setup() {
   TCB0.INTCTRL = TCB_CAPT_bm;
   TCB0.CTRLA = TCB_CLKSEL_CLKDIV2_gc | TCB_ENABLE_bm;
   set_sleep_mode(SLEEP_MODE_IDLE);
-  wdt_enable(WDTO_1S);
+  wdt_reset();
+  _PROTECTED_WRITE(WDT.CTRLA, WDT_PERIOD_1KCLK_gc);
 }
 
 void loop() {
